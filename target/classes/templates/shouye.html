@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <link rel = "icon" href ="/imgs/kun.jpg">
+    <title>坤越野会员</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="https://unpkg.com/wangeditor/dist/wangEditor.min.js"></script>
+</head>
+<style>
+    .bgc{
+        background:url("/imgs/kun.jpg");
+        background-size: 100%;
+        height: 800px;
+    }
+    .input-with-select,.el-input__inner{
+        background: transparent;
+    }
+    .q{
+        color: #FFFFFF;
+    }
+</style>
+<body>
+<!--html代码 -->
+<div id="app">
+    <el-card class="bgc"></el-card>
+    <el-card class="box-card">
+        <template>
+            <div style="text-align: center;">
+                <span style="font-size: 40px; color: #104f3e;"><strong><!--<i class="el-icon-truck"></i>-->坤越野会员信息后台</strong></span><br>
+                <span style="font-size: 20px; color: #104f3e;"><strong>KUN YUE YE HUI YUAN XIN XI HOU TAI</strong></span>
+            </div><br><br>
+            <el-button-group style="width: 100%;color: #FFFFFF;">
+                <el-form :model="form" :inline="true" class="demo-form-inline" style="color: #FFFFFF;text-align: right" >
+                    <el-row>
+                        <el-col :span="13" style="color: #FFFFFF;text-align: left;">
+                            <el-form-item label="真是姓名">
+                                <el-input v-model="form.name" style="width: 130px;" class="input-with-select" clearable></el-input>
+                            </el-form-item>
+                            <el-form-item label="会员号" style="text-align: left">
+                                <el-input v-model="form.num" style="width: 130px;border: #FFFFFF;" class="input-with-select" clearable></el-input>
+                            </el-form-item>
+                            <el-form-item label="手机号" style="text-align: left">
+                                <el-input v-model="form.phone" style="width: 150px;border: #FFFFFF;" class="input-with-select" clearable></el-input>
+                            </el-form-item>
+                            <el-button  @click="seach" icon="el-icon-search" style="background-color: #0d4f34;border: #0d4f34;color: #FFFFFF">搜索</el-button>
+                        </el-col>
+                        <el-col :span="11" style="text-align: center;">
+                            <div class="grid-content bg-purple-light" style="text-align: center;">
+                                <el-button-group>
+                                    <el-button style="background-color: #0d4f34;border: #0d4f34;color: #FFFFFF" icon="el-icon-place" @click="showmap" size="mini">会员数据分析</el-button>
+                                    <el-button style="background-color: #991427;border: #991427;color: #FFFFFF" icon="el-icon-s-platform" @click="examine" size="mini">审核</el-button>
+                                    <el-button style="background-color: #0d4f34;border: #0d4f34;color: #FFFFFF" icon="el-icon-user" @click="add" size="mini">添加会员</el-button>
+                                    <el-button style="background-color: #991427;border: #991427;color: #FFFFFF" icon="el-icon-close" @click="qk" size="mini">清空数据</el-button>
+                                    <el-button style="background-color: #909399;border: #909399;color: #FFFFFF" icon="el-icon-close" @click="out" size="mini">退出</el-button>
+                                </el-button-group><br><br>
+                                <div style="text-align: center;">
+                                    <div style="display: inline-block;">
+                                        <el-upload
+                                                ref="upload"
+                                                action="/excel/dr"
+                                                :on-preview="handlePreview"
+                                                :on-remove="handleRemove"
+                                                :file-list="fileList"
+                                                :auto-upload="false">
+
+                                            <el-button slot="trigger" size="mini"style="background-color: #0d4f34;text-align: right;border: #0d4f34;color: #FFFFFF"><i class="el-icon-more"></i>选取文件</el-button>
+                                            <el-button size="mini" style="background-color: #0d4f34;border: #0d4f34;text-align: right;color: #FFFFFF" @click="submitUpload">
+                                                <i class="el-icon-upload2"></i>开始导入
+                                            </el-button>
+                                        </el-upload>
+                                    </div>
+                                    <div style="display: inline-block;">
+                                        <div style="display: inline-block;">
+                                            <el-button size="mini" style="text-align: right; background-color: #0d4f34;color: #FFFFFF" @click="exportExcel"><i
+                                                    class="el-icon-folder-opened"></i>导出到Excel
+                                            </el-button>
+                                        </div>
+                                        <div style="display: inline-block;">
+                                            <form method="get" action="/excel/download">
+                                                <button size="mini" style="text-align: right; background-color: #0d4f34;color: #FFFFFF"><i
+                                                        class="el-icon-download"></i>下载模板
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div slot="tip" class="el-upload__tip" style="color: #0d4f34;"><strong style="background-color: #909399">注:1、只能上传Excel文件 2、 上传成功后手动刷新页面 3、请按照指定模板进行填写内容并上传</strong></div>
+                                </div>
+                            </div><br><br>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </el-button-group>
+            <el-table
+                    :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize).filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                    ref="multipleTable"
+                    v-loading="loading"
+                    id='exceltable'
+                    border
+                    height="700"
+                    :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+                    @selection-change="handleSelectionChange"
+                    style="width: 100%;">
+                <el-table-column
+                        label="序号"
+                        type="index"
+                        width="55">
+                </el-table-column>
+                <el-table-column
+                        label="姓名"
+                        width="150"
+                        prop="name">
+                </el-table-column>
+                <el-table-column
+                        label="性别"
+                        prop="sex"
+                        width="50">
+                </el-table-column>
+                <el-table-column
+                        label="会员编码"
+                        prop="num"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        label="电话"
+                        prop="phone"
+                        width="220">
+                </el-table-column>
+                <el-table-column
+                        label="打印字母"
+                        prop="dyname"
+                        width="120">
+                </el-table-column>
+                <el-table-column
+                        label="尺码"
+                        prop="cm"
+                        width="120">
+                </el-table-column>
+                <el-table-column
+                        label="注册时间"
+                        prop="date"
+                        :formatter="formatDate"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        label="状态"
+                        prop="status"
+                        width="120">
+                    <template slot-scope="scope">
+                        <el-tag
+                                :type="scope.row.status === '待审核' ? 'danger' : 'success'"
+                                disable-transitions>{{scope.row.status}}</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="200">
+                    <template slot-scope="scope" style="text-align: center;">
+                        <el-button-group>
+                            <el-button
+                                    icon="el-icon-edit"
+                                    size="mini"
+                                    @click="handleEdit(scope.$index, scope.row)" style="background-color: #0d4f34;color: #FFFFFF">编辑</el-button>
+                            <el-button
+                                    icon="el-icon-delete"
+                                    size="mini"
+                                    type="danger"
+                                    @click="handleDelete(scope.$index, scope.row)" style="background-color: #991427;color: #FFFFFF">删除</el-button>
+                        </el-button-group>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </template>
+        <!--分页-->
+        <div class="block" style="text-align: center;">
+            <br>
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[10,20,50,1000]"
+                    :page-size="pagesize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="tableData.length">
+            </el-pagination>
+        </div>
+    </el-card>
+    <!--地图map-->
+    <el-dialog
+            title="会员数据分析"
+            :visible.sync="map"
+            width="90%">
+        <el-row>
+            <el-col :span="24"><div style="height: 550px;" id="container"></div></el-col>
+        </el-row><br>
+        <el-row>
+            <el-col :span="8"><div style="height: 500px;" id="container2"></div></el-col>
+            <el-col :span="16"><div style="height: 500px;" id="container3"></div></el-col>
+        </el-row>
+    </el-dialog>
+    <!--添加会员-->
+    <el-dialog
+            title="新增会员"
+            :visible.sync="addkun"
+            width="50%">
+        <el-form :model="addForm"  ref="addForm" id="addForm" name="addForm"
+                 label-width="130px">
+            <el-form-item label="姓名：" prop="name">
+                <el-input v-model="addForm.name" id="name" placeholder="请输入姓名"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="会员号：" prop="num">
+                <el-input v-model="addForm.num" id="num" placeholder="请输入会员编号"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="衣服尺码：" prop="cm">
+                <el-input v-model="addForm.cm" id="cm" placeholder="请输入衣服尺码"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="打印名称：" prop="dyname">
+                <el-input v-model="addForm.zw" id="zw" placeholder="请输入需要打印的字母或标识"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号：" prop="phone">
+                <el-input v-model="addForm.phone" id="phone" placeholder="请输入手机号"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="性别：" prop="sex" >
+                <el-select v-model="addForm.sex" placeholder="请选性别" style="width: 100%;">
+                    <el-option label="男" value="男"></el-option>
+                    <el-option label="女" value="女"></el-option>
+                </el-select>
+            </el-form-item>
+            <br><br>
+            <div style="text-align: center;">
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="info" @click="addkun = false">取 消</el-button>
+                    <el-button type="primary" @click="submit('addForm')">添  加 会  员</el-button>
+                </span>
+            </div>
+        </el-form>
+    </el-dialog>
+    <!--编辑-->
+    <el-dialog
+            title="修改会员信息"
+            :visible.sync="editkun"
+            width="50%">
+        <el-form :model="editForm"  ref="editForm" id="editForm" name="editForm"
+                 label-width="130px">
+            <el-form-item label="姓名：" prop="name">
+                <el-input v-model="editForm.name" id="name" placeholder="请输入姓名"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="会员号：" prop="num">
+                <el-input v-model="editForm.num" id="num" placeholder="请输入会员编号"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="衣服尺码：" prop="cm">
+                <el-input v-model="editForm.cm" id="cm" placeholder="请输入衣服尺码"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="打印名称：" prop="dyname">
+                <el-input v-model="editForm.dyname" id="dyname" placeholder="请输入需要打印的字母或标识"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号：" prop="phone">
+                <el-input v-model="editForm.phone" id="phone" placeholder="请输入手机号"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="性别：" prop="sex" >
+                <el-select v-model="editForm.sex" placeholder="请选性别" style="width: 100%;">
+                    <el-option label="男" value="男"></el-option>
+                    <el-option label="女" value="女"></el-option>
+                </el-select>
+            </el-form-item>
+            <br><br>
+            <div style="text-align: center;">
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="info" @click="editkun = false">取 消</el-button>
+                    <el-button type="primary" @click="edit('editForm')">修 改</el-button>
+                </span>
+            </div>
+        </el-form>
+    </el-dialog>
+    <!--审核-->
+    <el-dialog
+            title="审核会员"
+            :visible.sync="examinedlog"
+            width="90%">
+        <el-row>
+            <el-col :span="24" style="text-align: right;"><div>
+                <el-button size="mini" style="background-color: #0d4f34;border: #0d4f34;text-align: right;color: #FFFFFF" @click="oneExamine">
+                    <i class="el-icon-check"></i>一键审核
+                </el-button>
+            </div></el-col>
+        </el-row><br>
+        <el-table
+                :data="examineTableData.slice((currentPage-1)*pagesize,currentPage*pagesize).filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                ref="multipleTable"
+                v-loading="loading"
+                border
+                height="500"
+                :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+                @selection-change="handleSelectionChange"
+                style="width: 100%;">
+            <el-table-column
+                    label="序号"
+                    type="index"
+                    width="55">
+            </el-table-column>
+            <el-table-column
+                    label="姓名"
+                    width="150"
+                    prop="name">
+            </el-table-column>
+            <el-table-column
+                    label="性别"
+                    prop="sex"
+                    width="40">
+            </el-table-column>
+            <el-table-column
+                    label="会员编码"
+                    prop="num"
+                    width="60">
+            </el-table-column>
+            <el-table-column
+                    label="电话"
+                    prop="phone"
+                    width="150">
+            </el-table-column>
+            <el-table-column
+                    label="打印字母"
+                    prop="dyname"
+                    width="120">
+            </el-table-column>
+            <el-table-column
+                    label="尺码"
+                    prop="cm"
+                    width="80">
+            </el-table-column>
+            <el-table-column
+                    label="状态"
+                    prop="status"
+                    width="80">
+                <template slot-scope="scope">
+                    <el-tag
+                            :type="scope.row.status === '待审核' ? 'danger' : 'success'"
+                            disable-transitions>{{scope.row.status}}</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column
+                    label="注册时间"
+                    prop="date"
+                    :formatter="formatDate"
+                    width="180">
+            </el-table-column>
+            <el-table-column label="操作" width="250">
+                <template slot-scope="scope" style="text-align: left;">
+                    <el-button-group>
+                        <el-button
+                                icon="el-icon-circle-check"
+                                size="mini"
+                                @click="yesexamine(scope.$index, scope.row)" style="background-color: #0d4f34;color: #FFFFFF">审核通过</el-button>
+                        <el-button
+                                icon="el-icon-delete"
+                                size="mini"
+                                type="danger"
+                                @click="noexamine(scope.$index, scope.row)" style="background-color: #991427;color: #FFFFFF">不予通过</el-button>
+                    </el-button-group>
+                </template>
+            </el-table-column>
+        </el-table>
+        <br><br>
+        <div style="text-align: center;">
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="info" @click="examinedlog = false">关 闭</el-button>
+                </span>
+        </div>
+    </el-dialog>
+    <!--回到顶部-->
+    <el-backtop style="height: 20px;width: 20px;"> <i class="el-icon-upload2"></i></el-backtop>
+</div>
+</body>
+<script src="/vue/jquery.min.js"></script>
+<script src="/vue/vue.min.js"></script>
+<script src="/jquery.table2excel.js"></script>
+<script src="/vue/element-ui.min.js"></script>
+<script src="/dist/echarts.js"></script>
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/getscript?v=3.0&ak=KOmVjPVUAey1G2E8zNhPiuQ6QiEmAwZu&services=&t=20220914200249"></script>
+<script src="/dist/bmap.js"></script>
+<!--<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.3.3/dist/extension/bmap.min.js"></script>-->
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@5.3.3/dist/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/china.js"></script>
+<script type="text/javascript" src="https://fastly.jsdelivr.net/npm/echarts@4.9.0/map/js/world.js"></script>
+<script src="/js/coment.js"></script>
+<script src="/js/shouye.js"></script>
+</html>

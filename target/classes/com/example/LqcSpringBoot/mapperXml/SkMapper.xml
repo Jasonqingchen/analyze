@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.LqcSpringBoot.mapper.SkMapper" >
+  <resultMap id="BaseResultMap" type="com.example.LqcSpringBoot.model.Sk" >
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="userid" property="userid" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="cpname" property="cpname" jdbcType="VARCHAR" />
+    <result column="dktime" property="dktime" jdbcType="TIME" />
+    <result column="usetime" property="usetime" jdbcType="TIME" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="jcj" property="jcj" jdbcType="TIME" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="num" property="num" jdbcType="VARCHAR" />
+    <result column="zb" property="zb" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="com.example.LqcSpringBoot.model.Sk" >
+    insert into sk (id, userid, name, 
+      cpname, dktime, usetime, 
+      sex, jcj, status, num, 
+      zb)
+    values (#{id,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{cpname,jdbcType=VARCHAR}, #{dktime,jdbcType=TIME}, #{usetime,jdbcType=TIME}, 
+      #{sex,jdbcType=VARCHAR}, #{jcj,jdbcType=TIME}, #{status,jdbcType=VARCHAR}, #{num,jdbcType=VARCHAR}, 
+      #{zb,jdbcType=VARCHAR})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, userid, name, cpname, dktime, usetime, sex, jcj, status, num, zb
+    from sk
+  </select>
+
+<!--条件查询 无条件的话就查询所有符合条件的数据-->
+  <select id="selectByMap" parameterType="String" resultMap="BaseResultMap" >
+select * from  sk t where t.userid is null
+    <if test="sex != null and sex != ''">
+      AND t.sex = #{sex}
+    </if>
+    <if test="userName != null and userName != ''">
+      AND t.name = #{userName}
+    </if>
+    <if test="num != null and num != ''">
+      AND t.num = #{num}
+    </if>
+    <if test="zb != null and zb != ''">
+      AND t.zb = #{zb}
+    </if>
+    order by t.jcj asc
+  </select>
+
+  <select id="selectListByUserid" resultMap="BaseResultMap" >
+    select id, userid, name, cpname, dktime, usetime, sex, jcj, status, num, zb
+    from sk where userid is null order by jcj asc;
+  </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" >
+    select id, userid, name, cpname, dktime, usetime, sex, jcj, status, num, zb
+    from sk where userid =#{id};
+  </select>
+</mapper>
