@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
-    <link rel = "icon" href ="/imgs/kun.jpg">
-    <title>坤越野会员</title>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <script src="https://unpkg.com/wangeditor/dist/wangEditor.min.js"></script>
+    <link rel = "icon" href ="/imgs/table.jpeg">
+    <title>库存管理平台</title>
+    <link rel="stylesheet" href="/vue/element-ui.min.css"/>
 </head>
 <style>
     .input-with-select,.el-input__inner{
@@ -26,15 +25,11 @@
         background-color: #FFFFFF;
         color: #af1028;
     }
-    .bgc{
-        background:url("/imgs/kun.jpg");
-        background-size: 100%;
-    }
     .kbg{
         background:url("/imgs/kbg.jpeg");
     }
     .zbj{
-        background:url("/imgs/222.jpg");
+        background:url("/imgs/kbg.jpeg");
         background-size: 100%;
     }
     .opacity{background: rgba(144, 147, 153, 0.5); filter:progid:DXImageTransform.Microsoft.Gradient(startColorstr=#909399, endColorstr=#909399);}
@@ -47,12 +42,15 @@
     <br><br><br><br><br><br><br><br><br><br><br>
     <el-row class="opacity">
             <el-col :span="4"><div class="grid-content"></div></el-col>
-            <el-col :span="10" class="bgc" style="height:330px;opacity:0.6; text-align: left"><div><el-image  src="/imgs/kun.jpg" style="height:330px; width: 100%"/></div></el-col>
+            <el-col :span="10" class="bgc" style="height:330px;opacity:0.6; text-align: center"><div>
+                <br><br><br>
+                <span style="color: #FFFFFF;"><strong style="font-size: 50px; font-style: unset">库存管理平台</strong><br><span style="font-size: 20px;">KU CUN GUAN LI PING TAI</span></span>
+            </div></el-col>
             <el-col :span="2"><div class="grid-content"></div></el-col>
             <el-col :span="8" style="height: 330px; text-align: left;"><div style=" background: rgba(255,255,255,0);height: 330px; text-align: center">
                 <br>
                 <div id="error"></div>
-                <span style="color: #0d4f34;"><strong style="font-size: 20px;">&nbsp;&nbsp;&nbsp;&nbsp;坤越野后台管理系统</strong><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 10px;">KUN YUE YE HOU TAI GUAN LI XI TONG</span></span>
+<!--                <span style="color: #f5f5f5;"><strong style="font-size: 20px;">&nbsp;&nbsp;&nbsp;&nbsp;库存管理平台</strong><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 10px;">KU CUN GUAN LI PING TAI</span></span>-->
                 <br><br>
                 <el-form ref="form" :model="form"  label-width="80px" style="width: 400px; color: #FFFFFF;">
                     <el-form-item>
@@ -90,7 +88,8 @@
             </div></el-col>
     </el-row><br><br><br><br><br>
     <el-row>
-        <el-col :span="24"><div class="grid-content" style="text-align: center;" ><span><el-link :underline="false" style="color: #fff1f1"><strong> 纵横山野 坤越野</strong></el-link> </span><br><span><el-link type="info" :underline="false" style="color: #fff1f1">kun ultar trail</el-link></span></div></el-col>
+        <el-col :span="24"><div class="grid-content" style="text-align: center;" ><span><el-link :underline="false" style="color: #fff1f1"><strong>     库存管理平台
+</strong></el-link> </span><br><span><el-link type="info" :underline="false" style="color: #fff1f1">Author：Jason</el-link></span></div></el-col>
     </el-row>
 </div>
 </body>

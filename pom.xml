@@ -176,6 +176,27 @@
             <artifactId>thymeleaf-spring5</artifactId>
             <version>3.0.11.RELEASE</version>
         </dependency>
+        <!-- excel导出 -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>3.17</version>
+        </dependency>
+        <dependency>
+            <groupId>com.gaoice</groupId>
+            <artifactId>easyexcel-spring-boot-starter</artifactId>
+            <version>2.0</version>
+        </dependency>
         <!-- 电话号码工具类 -->
         <dependency>
             <groupId>com.googlecode.libphonenumber</groupId>

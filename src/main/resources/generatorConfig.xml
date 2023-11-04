@@ -24,7 +24,7 @@
             <property name="addRemarkComments" value="false"/>
         </commentGenerator>
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://114.116.252.196:3306/myadmin" userId="root"
+                        connectionURL="jdbc:mysql://localhost:3306/mydb" userId="root"
                         password="root">
         </jdbcConnection>
 
@@ -52,7 +52,7 @@
         </javaClientGenerator> -->
 
         <!-- table是用户指定的被生成相关信息的表，它必须在指定的jdbc连接中已经被建立。?是否可以多个 -->
-        <table tableName="kunyueyeuser" enableCountByExample="true" enableUpdateByExample="true"
+        <table tableName="jxctable" enableCountByExample="true" enableUpdateByExample="true"
                enableDeleteByExample="true" enableSelectByExample="true" selectByExampleQueryId="true"></table>
 
     </context>

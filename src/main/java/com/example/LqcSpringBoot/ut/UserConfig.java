@@ -16,7 +16,6 @@ public class UserConfig implements  HandlerInterceptor{
      */
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
-        System.out.println("原生拦截器前");
         StringBuffer url = httpServletRequest.getRequestURL();
         if (httpServletRequest.getSession().getAttribute("token")==null) {
             httpServletResponse.sendRedirect( httpServletRequest.getContextPath()+"/error.html" );
@@ -29,7 +28,6 @@ public class UserConfig implements  HandlerInterceptor{
      */
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
-        System.out.println("原生拦截器中");
     }
 
     /**
@@ -37,7 +35,6 @@ public class UserConfig implements  HandlerInterceptor{
      */
     @Override
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
-        System.out.println("原生拦截器后");
     }
 
 }

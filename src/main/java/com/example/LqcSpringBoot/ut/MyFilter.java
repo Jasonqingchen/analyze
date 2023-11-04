@@ -19,9 +19,7 @@ public class MyFilter extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         System.out.println("自定义拦截器");
-            registry.addInterceptor(new UserConfig()).addPathPatterns("/kunyueye/**").excludePathPatterns("/kunyueye/index",
-                    "/kunyueye/loginsubmit",
-                    "/kunyueye/out","/kunyueye/lists","/kunyueye/list","/kunyueye/sbmit","/kunyueye/seach","/kunyueye/url");
+            registry.addInterceptor(new UserConfig()).addPathPatterns("/container/**").excludePathPatterns("/error/");
             super.addInterceptors(registry);
     }
 }

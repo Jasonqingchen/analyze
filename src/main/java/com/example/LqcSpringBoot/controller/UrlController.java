@@ -8,7 +8,7 @@ public class UrlController {
     /**
      * 跳转连接（登录页面）
      */
-    @RequestMapping("/kun")
+    @RequestMapping("/login")
     public String kunyueyeUrl () {
         return "index";
     }

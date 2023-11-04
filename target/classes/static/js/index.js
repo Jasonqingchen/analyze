@@ -53,7 +53,7 @@ new Vue({
                 'password': form.password,
                 'code': form.code
             };
-            var url = '/kunyueye/loginsubmit';
+            var url = '/login/loginsubmit';
             $.ajax({
                 type: 'post',
                 url: url,
@@ -67,7 +67,7 @@ new Vue({
                     } else if (res=="error") {
                         $("#error").prepend("<span style=\"color: #f11259; font-size: 12px;\"><strong>用户名或者密码有误</strong></span>");
                     } else {
-                        window.location.href=urls+"/kunyueye/shouye";
+                        window.location.href=urls+"/container/shouye";
                         //window.location.href=urls+"/kunyueye/shouye";
                     }
                 },

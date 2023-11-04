@@ -19,7 +19,7 @@ public class DownloadExcelFile {
      */
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public static void remoteFileDownload(HttpServletResponse response) {
-        String filePath="http://1.12.238.58:8089/excel/%E6%B5%8B%E8%AF%95%E6%A8%A1%E6%9D%BF.xlsx";
+       /* String filePath="http://1.12.238.58:8089/excel/%E6%B5%8B%E8%AF%95%E6%A8%A1%E6%9D%BF.xlsx";
         OutputStream outputStream = null;
         InputStream inputStream = null;
         URL url;
@@ -55,6 +55,6 @@ public class DownloadExcelFile {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 }

@@ -2,38 +2,129 @@ new Vue({
     el: '#app',
     data() {
         return {
-            map:false,
             fileList: [],
+            ccorder:Date.now(),
+            rcdynamicValidateForm: {
+                rcdetil: [{
+                    pnumber: '',
+                    pname: '',
+                    color: '',
+                    costprice: '',
+                    costcount: '',
+                    rccount: '',
+                    type: '',
+                    bz: '',
+                    gys: '',
+                    sshg: '',
+                    qcs: '0',
+                    rcdate: ''
+                }]
+            },//入仓动态
+            ccdynamicValidateForm: {
+                customeraddress:'',
+                customername:'',
+                customerphone:'',
+                ccdate: '',
+                orderid:'',
+                rcdetil: [{
+                    pnumber: '',
+                    pname: '',
+                    color: '',
+                    ccprice: '',//单价
+                    cccount: '',//出库数量
+                    ccsumprice:'',//出库总价
+                    type: '',
+                    bz: '',
+                    gys: '',
+                    sshg: '',
+                }]
+            },//出仓动态
             examinedlog:false,
-            up: false,
             loading: true,
-            examineTableData:[],//审核table表格
-            tableData: [],
+            rcdlog:false,
+            ccdlog:false,
+            tableData: [],//货柜列表
+            tableData2: [],//入库列表
+            tableData3:[],
+            tableData4: [],//进销存列表
+            tableData5: [],//货柜关联货物表格
             currentPage: 1, //初始页
             pagesize: 10,    //    每页的数据
             search: '',
+            search2:'',
+            search3:'',
+            search4:'',
+            search5:'',
+            currentPagerc: 1, //初始页
+            pagesizerc: 10,    //    每页的数据
+            searchrc: '',
+            currentPagecc: 1, //初始页
+            pagesizecc: 10,    //    每页的数据
+            currentPagejxc: 1, //初始页
+            pagesizejxc: 10,    //    每页的数据
+            currentPagegl: 1, //初始页
+            pagesizegl: 10,    //    每页的数据
+            searchcc: '',
             form:{
-                num:'',
-                name:'',
+                banknumber:'',
+                gnumber:'',
                 phone:''
             },
+            rcform:{
+                rcval1:'',
+                rcval2:'',
+                pnumber:'',
+                sshg:'',
+            },
+            ccform:{
+                rcval1:'',
+                rcval2:'',
+                customerphone:'',
+                orderid:''
+            },
+            jxcform:{
+                rcval1:'',
+                rcval2:'',
+                customerphone:'',
+                pnumber:''
+            },
+            rcd: false,
+            ccd: false,
             addkun: false,
             editkun:false,
             addForm: {
-                name: '',
-                id: '',
-                num:'',
-                sex:'',
+                gysfs:'',
+                id:'',
+                gnumber:'',
+                gdbfs:'',
                 phone:'',
-                dyname:''
+                gsize:'',
+                bankname:'',
+                cgdate:'',
+                status:'',
+                dgdate:'',
+                banknumber:'',
+                content:'',
+                type:'',
+                count:'',
+                price:''
             },
             editForm:{
-                name: '',
-                id: '',
-                num:'',
-                sex:'',
+                id:'',
+                gysfs:'',
+                dgdate:'',
+                gnumber:'',
+                gdbfs:'',
                 phone:'',
-                dyname:''
+                gsize:'',
+                bankname:'',
+                cgdate:'',
+                status:'',
+                banknumber:'',
+                content:'',
+                type:'',
+                count:'',
+                price:''
             }
         }
     },
@@ -44,700 +135,19 @@ new Vue({
     },
     //方法事件
     methods: {
-        //一键审核
-        oneExamine(){
-            this.$confirm('你将一键审核通过所有注册会员?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                var newthis = this;
-                var url = '/kunyueye/oneexamine';
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    dataType: 'json',
-                    success: function (result) {
-                        if (result > 0) {
-                            newthis.list();
-                            newthis.examinelist();
-                            newthis.$message({
-                                message: '一键审核通过',
-                                type: 'success'
-                            });
-                        } else {
-                            newthis.$message.error('失败');
-                        }
-                    },
-                    error: function () {
-
-                    }
-                });
-            }).catch(() => {
-                var newth = this;
-                newth.$notify.error({
-                    title: '取消',
-                    message: '取消！'
-                });
-            });
-        },
-        showmap(){
-            var newthis = this;
-            newthis.map=true
-            let newPromise = new Promise((resolve) => {
-                resolve()
-            })
-            //然后异步执行echarts的初始化函数
-            newPromise.then(() => {
-                //	此dom为echarts图标展示dom
-                newthis.in()
-                newthis.sexinit();
-                newthis.registerinit();
-            })
-        },
-        registerinit(){
-            var newthis = this;
-            var url = '/echarts/registerinit';
-            $.ajax({
-                type: 'post',
-                url: url,
-                dataType: 'json',
-                success: function (res) {
-                    newthis.register(res)
-                },
-                error: function () {
-
-                }
-            });
-        },
-        register(data){
-            var date=[];
-            var datas=[];
-            for (var i=0;i<data.length;i++) {
-                datas.push(data[i].id);
-                date.push(this.formatDates(data[i].date));
-            }
-            var chartDom = document.getElementById('container3');
-            var myChart = echarts.init(chartDom, 'dark');
-            var option;
-
-            option = {
-                backgroundColor: '#5a5a63',
-                title: {
-                    text: '会员注册情况'
-                },
-                tooltip: {
-                    trigger: 'axis',
-                },
-                legend: {
-                    data: [ '注册数'],
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true,
-                },
-                toolbox: {
-                    feature: {
-                        saveAsImage: {}
-                    }
-                },
-                xAxis: {
-                    type: 'category',
-                    data: date
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [
-                    {
-                        name: '注册数',
-                        type: 'line',
-                        step: 'end',
-                        data: datas
-                    }
-                ]
-            };
-            myChart.setOption(option);
-        },
-        sexinit(){
-            var newthis = this;
-            var url = '/echarts/sexinit';
-            $.ajax({
-                type: 'post',
-                url: url,
-                dataType: 'json',
-                success: function (res) {
-                    newthis.sex(res)
-                },
-                error: function () {
-
-                }
-            });
-        },
-        in(){
-            var newthis = this;
-            var url = '/echarts/fb';
-            $.ajax({
-                type: 'post',
-                url: url,
-                dataType: 'json',
-                success: function (res) {
-                    newthis.init(res)
-                },
-                error: function () {
-
-                }
-            });
-        },
-        sex (d){
-            var myChart = echarts.init(document.getElementById("container2"));
-            option = null;
-            option = {
-                backgroundColor:'#5a5a63',
-                title: {
-                    text: '男女比例分布',
-                    subtext: '',
-                    left: 'center',
-                    textStyle:{
-                        color:'#ccc'
-                    }
-                },
-                tooltip: {
-                    trigger: 'item',
-                    textStyle:{
-                        color:'#ccc'
-                    }
-                },
-                legend: {
-                    orient: 'vertical',
-                    left: 'left',
-                    textStyle:{
-                        color:'#ccc'
-                    }
-                },
-                series: [
-                    {
-                        name: '性别',
-                        type: 'pie',
-                        radius: '50%',
-                        data: d,
-                        emphasis: {
-                            itemStyle: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
-                        }
-                    }
-                ]
-            };
-            myChart.setOption(option);
-        },
-        init(d) {
-            var chartDom = document.getElementById('container');
-            var myChart = echarts.init(chartDom, null, {
-                useDirtyRect: true
-            });
-            var option;
-            const data = d;
-            const geoCoordMap = {
-                海门: [121.15, 31.89],
-                鄂尔多斯: [109.781327, 39.608266],
-                招远: [120.38, 37.35],
-                舟山: [122.207216, 29.985295],
-                齐齐哈尔: [123.97, 47.33],
-                盐城: [120.13, 33.38],
-                赤峰: [118.87, 42.28],
-                青岛: [120.33, 36.07],
-                乳山: [121.52, 36.89],
-                金昌: [102.188043, 38.520089],
-                泉州: [118.58, 24.93],
-                莱西: [120.53, 36.86],
-                日照: [119.46, 35.42],
-                胶南: [119.97, 35.88],
-                南通: [121.05, 32.08],
-                拉萨: [91.11, 29.97],
-                云浮: [112.02, 22.93],
-                梅州: [116.1, 24.55],
-                文登: [122.05, 37.2],
-                上海: [121.48, 31.22],
-                攀枝花: [101.718637, 26.582347],
-                威海: [122.1, 37.5],
-                承德: [117.93, 40.97],
-                厦门: [118.1, 24.46],
-                汕尾: [115.375279, 22.786211],
-                潮州: [116.63, 23.68],
-                丹东: [124.37, 40.13],
-                太仓: [121.1, 31.45],
-                曲靖: [103.79, 25.51],
-                烟台: [121.39, 37.52],
-                福州: [119.3, 26.08],
-                瓦房店: [121.979603, 39.627114],
-                即墨: [120.45, 36.38],
-                抚顺: [123.97, 41.97],
-                玉溪: [102.52, 24.35],
-                张家口: [114.87, 40.82],
-                阳泉: [113.57, 37.85],
-                莱州: [119.942327, 37.177017],
-                湖州: [120.1, 30.86],
-                汕头: [116.69, 23.39],
-                昆山: [120.95, 31.39],
-                宁波: [121.56, 29.86],
-                湛江: [110.359377, 21.270708],
-                揭阳: [116.35, 23.55],
-                荣成: [122.41, 37.16],
-                连云港: [119.16, 34.59],
-                葫芦岛: [120.836932, 40.711052],
-                常熟: [120.74, 31.64],
-                东莞: [113.75, 23.04],
-                河源: [114.68, 23.73],
-                淮安: [119.15, 33.5],
-                泰州: [119.9, 32.49],
-                南宁: [108.33, 22.84],
-                营口: [122.18, 40.65],
-                惠州: [114.4, 23.09],
-                江阴: [120.26, 31.91],
-                蓬莱: [120.75, 37.8],
-                韶关: [113.62, 24.84],
-                嘉峪关: [98.289152, 39.77313],
-                广州: [113.23, 23.16],
-                延安: [109.47, 36.6],
-                太原: [112.53, 37.87],
-                清远: [113.01, 23.7],
-                中山: [113.38, 22.52],
-                昆明: [102.73, 25.04],
-                寿光: [118.73, 36.86],
-                盘锦: [122.070714, 41.119997],
-                长治: [113.08, 36.18],
-                深圳: [114.07, 22.62],
-                珠海: [113.52, 22.3],
-                宿迁: [118.3, 33.96],
-                咸阳: [108.72, 34.36],
-                铜川: [109.11, 35.09],
-                平度: [119.97, 36.77],
-                佛山: [113.11, 23.05],
-                海口: [110.35, 20.02],
-                江门: [113.06, 22.61],
-                章丘: [117.53, 36.72],
-                肇庆: [112.44, 23.05],
-                大连: [121.62, 38.92],
-                临汾: [111.5, 36.08],
-                吴江: [120.63, 31.16],
-                石嘴山: [106.39, 39.04],
-                沈阳: [123.38, 41.8],
-                苏州: [120.62, 31.32],
-                茂名: [110.88, 21.68],
-                嘉兴: [120.76, 30.77],
-                长春: [125.35, 43.88],
-                胶州: [120.03336, 36.264622],
-                银川: [106.27, 38.47],
-                张家港: [120.555821, 31.875428],
-                三门峡: [111.19, 34.76],
-                锦州: [121.15, 41.13],
-                南昌: [115.89, 28.68],
-                柳州: [109.4, 24.33],
-                三亚: [109.511909, 18.252847],
-                自贡: [104.778442, 29.33903],
-                吉林: [126.57, 43.87],
-                阳江: [111.95, 21.85],
-                泸州: [105.39, 28.91],
-                西宁: [101.74, 36.56],
-                宜宾: [104.56, 29.77],
-                呼和浩特: [111.65, 40.82],
-                成都: [104.06, 30.67],
-                大同: [113.3, 40.12],
-                镇江: [119.44, 32.2],
-                桂林: [110.28, 25.29],
-                张家界: [110.479191, 29.117096],
-                宜兴: [119.82, 31.36],
-                北海: [109.12, 21.49],
-                西安: [108.95, 34.27],
-                金坛: [119.56, 31.74],
-                东营: [118.49, 37.46],
-                牡丹江: [129.58, 44.6],
-                遵义: [106.9, 27.7],
-                绍兴: [120.58, 30.01],
-                扬州: [119.42, 32.39],
-                常州: [119.95, 31.79],
-                潍坊: [119.1, 36.62],
-                重庆: [106.54, 29.59],
-                台州: [121.420757, 28.656386],
-                南京: [118.78, 32.04],
-                滨州: [118.03, 37.36],
-                贵阳: [106.71, 26.57],
-                无锡: [120.29, 31.59],
-                本溪: [123.73, 41.3],
-                克拉玛依: [84.77, 45.59],
-                渭南: [109.5, 34.52],
-                马鞍山: [118.48, 31.56],
-                宝鸡: [107.15, 34.38],
-                焦作: [113.21, 35.24],
-                句容: [119.16, 31.95],
-                北京: [116.46, 39.92],
-                徐州: [117.2, 34.26],
-                衡水: [115.72, 37.72],
-                包头: [110, 40.58],
-                绵阳: [104.73, 31.48],
-                乌鲁木齐: [87.68, 43.77],
-                枣庄: [117.57, 34.86],
-                杭州: [120.19, 30.26],
-                淄博: [118.05, 36.78],
-                鞍山: [122.85, 41.12],
-                溧阳: [119.48, 31.43],
-                库尔勒: [86.06, 41.68],
-                安阳: [114.35, 36.1],
-                开封: [114.35, 34.79],
-                济南: [117, 36.65],
-                德阳: [104.37, 31.13],
-                温州: [120.65, 28.01],
-                九江: [115.97, 29.71],
-                邯郸: [114.47, 36.6],
-                临安: [119.72, 30.23],
-                兰州: [103.73, 36.03],
-                沧州: [116.83, 38.33],
-                临沂: [118.35, 35.05],
-                南充: [106.110698, 30.837793],
-                天津: [117.2, 39.13],
-                富阳: [119.95, 30.07],
-                泰安: [117.13, 36.18],
-                诸暨: [120.23, 29.71],
-                郑州: [113.65, 34.76],
-                哈尔滨: [126.63, 45.75],
-                聊城: [115.97, 36.45],
-                芜湖: [118.38, 31.33],
-                唐山: [118.02, 39.63],
-                平顶山: [113.29, 33.75],
-                邢台: [114.48, 37.05],
-                德州: [116.29, 37.45],
-                济宁: [116.59, 35.38],
-                荆州: [112.239741, 30.335165],
-                宜昌: [111.3, 30.7],
-                义乌: [120.06, 29.32],
-                丽水: [119.92, 28.45],
-                洛阳: [112.44, 34.7],
-                秦皇岛: [119.57, 39.95],
-                株洲: [113.16, 27.83],
-                石家庄: [114.48, 38.03],
-                莱芜: [117.67, 36.19],
-                常德: [111.69, 29.05],
-                保定: [115.48, 38.85],
-                湘潭: [112.91, 27.87],
-                金华: [119.64, 29.12],
-                岳阳: [113.09, 29.37],
-                长沙: [113, 28.21],
-                衢州: [118.88, 28.97],
-                廊坊: [116.7, 39.53],
-                菏泽: [115.480656, 35.23375],
-                合肥: [117.27, 31.86],
-                武汉: [114.31, 30.52],
-                大庆: [125.03, 46.58]
-            };
-            const convertData = function (data) {
-                var res = [];
-                for (var i = 0; i < data.length; i++) {
-                    var geoCoord = geoCoordMap[data[i].name];
-                    if (geoCoord) {
-                        res.push({
-                            name: data[i].name,
-                            value: geoCoord.concat(data[i].value)
-                        });
-                    }
-                }
-                return res;
-            };
-            option = {
-                title: {
-                    text: '坤越野全国会员分布图',
-                    subtext: '纵横山野  坤越野',
-                    sublink: 'shouye',
-                    left: 'center'
-                },
-                tooltip: {
-                    trigger: 'item'
-                },
-                bmap: {
-                    center: [103.114129, 33.550339],
-                    zoom: 5,
-                    roam: true,
-                    mapStyle: {
-                        styleJson: [
-                            {
-                                featureType: 'water',
-                                elementType: 'all',
-                                stylers: {
-                                    color: '#d1d1d1'
-                                }
-                            },
-                            {
-                                featureType: 'land',
-                                elementType: 'all',
-                                stylers: {
-                                    color: '#f3f3f3'
-                                }
-                            },
-                            {
-                                featureType: 'railway',
-                                elementType: 'all',
-                                stylers: {
-                                    visibility: 'off'
-                                }
-                            },
-                            {
-                                featureType: 'highway',
-                                elementType: 'all',
-                                stylers: {
-                                    color: '#fdfdfd'
-                                }
-                            },
-                            {
-                                featureType: 'highway',
-                                elementType: 'labels',
-                                stylers: {
-                                    visibility: 'off'
-                                }
-                            },
-                            {
-                                featureType: 'arterial',
-                                elementType: 'geometry',
-                                stylers: {
-                                    color: '#fefefe'
-                                }
-                            },
-                            {
-                                featureType: 'arterial',
-                                elementType: 'geometry.fill',
-                                stylers: {
-                                    color: '#fefefe'
-                                }
-                            },
-                            {
-                                featureType: 'poi',
-                                elementType: 'all',
-                                stylers: {
-                                    visibility: 'off'
-                                }
-                            },
-                            {
-                                featureType: 'green',
-                                elementType: 'all',
-                                stylers: {
-                                    visibility: 'off'
-                                }
-                            },
-                            {
-                                featureType: 'subway',
-                                elementType: 'all',
-                                stylers: {
-                                    visibility: 'off'
-                                }
-                            },
-                            {
-                                featureType: 'manmade',
-                                elementType: 'all',
-                                stylers: {
-                                    color: '#d1d1d1'
-                                }
-                            },
-                            {
-                                featureType: 'local',
-                                elementType: 'all',
-                                stylers: {
-                                    color: '#d1d1d1'
-                                }
-                            },
-                            {
-                                featureType: 'arterial',
-                                elementType: 'labels',
-                                stylers: {
-                                    visibility: 'off'
-                                }
-                            },
-                            {
-                                featureType: 'boundary',
-                                elementType: 'all',
-                                stylers: {
-                                    color: '#fefefe'
-                                }
-                            },
-                            {
-                                featureType: 'building',
-                                elementType: 'all',
-                                stylers: {
-                                    color: '#d1d1d1'
-                                }
-                            },
-                            {
-                                featureType: 'label',
-                                elementType: 'labels.text.fill',
-                                stylers: {
-                                    color: '#999999'
-                                }
-                            }
-                        ]
-                    }
-                },
-                series: [
-                    {
-                        name: '坤越野',
-                        type: 'scatter',
-                        coordinateSystem: 'bmap',
-                        data: convertData(data),
-                        symbolSize: function (val) {
-                            return val[2] / 1;
-                        },
-                        encode: {
-                            value: 2
-                        },
-                        label: {
-                            formatter: '{b}',
-                            position: 'right',
-                            show: false
-                        },
-                        emphasis: {
-                            label: {
-                                show: true
-                            }
-                        }
-                    },
-                    {
-                        name: '坤越野',
-                        type: 'effectScatter',
-                        coordinateSystem: 'bmap',
-                        data: convertData(
-                            data
-                                .sort(function (a, b) {
-                                    return b.value - a.value;
-                                })
-                                .slice(0, 6)
-                        ),
-                        symbolSize: function (val) {
-                            return val[2] / 1;
-                        },
-                        encode: {
-                            value: 2
-                        },
-                        showEffectOn: 'render',
-                        rippleEffect: {
-                            brushType: 'stroke'
-                        },
-                        label: {
-                            formatter: '{b}',
-                            position: 'right',
-                            show: true
-                        },
-                        itemStyle: {
-                            shadowBlur: 10,
-                            shadowColor: '#333'
-                        },
-                        emphasis: {
-                            scale: true
-                        },
-                        zlevel: 1
-                    }
-                ]
-            };
-
-            myChart.setOption(option);
-        },
-        //审核通过(修改status状态为1)
-        yesexamine(index, row){
-            var newthis = this;
-            var url = '/kunyueye/yesexamine';
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {'id': row.id},
-                dataType: 'json',
-                success: function (result) {
-                    if (result == 1) {
-                        newthis.list();
-                        newthis.examinelist();
-                        newthis.$message({
-                            message: '审核通过',
-                            type: 'success'
-                        });
-                    } else {
-                        newthis.$message.error('失败');
-                    }
-                },
-                error: function () {
-
-                }
-            });
-
-        },
-        //审核不通过（删除）
-        noexamine(index, row){
-            this.$confirm('不予通过后数据将删除?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                var newthis = this;
-                var url = '/kunyueye/del';
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: {'id': row.id},
-                    dataType: 'json',
-                    success: function (result) {
-                        if (result == 1) {
-                            newthis.examinelist();
-                            newthis.$message({
-                                message: '已退回并删除成功',
-                                type: 'success'
-                            });
-                        } else {
-                            newthis.$message.error('很遗憾，退回失败');
-                        }
-                    },
-                    error: function () {
-
-                    }
-                });
-            }).catch(() => {
-                var newth = this;
-                newth.$notify.error({
-                    title: '取消',
-                    message: '取消！'
-                });
-            });
-        },
-        //审核列表方法
-        examinelist(){
-            let self = this;
-            var url = '/kunyueye/dshList';
-            $.ajax({
-                type: 'POST',
-                url: url,
-                dataType: 'json',
-                success: function (res) {
-                    self.examineTableData=res
-                },
-                error: function () {
-                    console.log('error submit!!');
-                    return false;
-                }
-            });
-        },
-        //审核
-        examine(){
-            let self = this;
-            self.examinelist();
-            self.examinedlog = true;
+        addCol(){
+            this.cols.push({prop: 'name', label: '地址'})
         },
         //退出
         out() {
-            var url = '/kunyueye/out';
+            var url = '/login/out';
             $.ajax({
                 type: 'POST',
                 url: url,
                 dataType: 'text',
                 success: function (res) {
                     if (res=="success") {
-                        window.location.href=urls+"/kun";
+                        window.location.href=urls+"/login";
                         //window.location.href=urls+"/kunyueye/index";
                     }
                 },
@@ -747,17 +157,191 @@ new Vue({
                 }
             });
         },
-        //导出
+        //进销存列表导出
+        exportExceljxc() {
+            let _$this = this;
+            var f = _$this.ccform;
+            // 创建一个 form
+            var form1 = document.createElement("form");
+            form1.orderid = f.orderid;
+            form1.customerphone = f.customerphone;
+            form1.rcval1 = f.rcval1;
+            form1.rcval2 = f.rcval2;
+
+            document.body.appendChild(form1);
+            // 创建一个输入
+            var input = document.createElement("input");
+            // 设置相应参数
+            input.type = "text";
+            input.name = "orderid";
+            input.value = f.orderid;
+            var input1 = document.createElement("input");
+            // 设置相应参数
+            input1.type = "text";
+            input1.name = "customerphone";
+            input1.value = f.customerphone;
+            // 创建一个输入
+            var input2 = document.createElement("input");
+            // 设置相应参数
+            input2.type = "text";
+            input2.name = "start";
+            input2.value = f.rcval1;
+            var input3 = document.createElement("input");
+            // 设置相应参数
+            input3.type = "text";
+            input3.name = "end";
+            input3.value = f.rcval2;
+            // 将该输入框插入到 form 中
+            form1.appendChild(input);
+            form1.appendChild(input1);
+            form1.appendChild(input2);
+            form1.appendChild(input3);
+            // form 的提交方式
+            form1.method = "POST";
+            // form 提交路径
+            form1.action = "/excel/ccdc";
+            // 对该 form 执行提交
+            //暂时注释掉 避免测试导出 form1.submit();
+            // 删除该 form
+            document.body.removeChild(form1);
+
+        },
+        //库存列表导出
+        exportExcelcc() {
+            let _$this = this;
+            var f = _$this.ccform;
+            // 创建一个 form
+            var form1 = document.createElement("form");
+            form1.orderid = f.orderid;
+            form1.customerphone = f.customerphone;
+            form1.rcval1 = f.rcval1;
+            form1.rcval2 = f.rcval2;
+
+            document.body.appendChild(form1);
+            // 创建一个输入
+            var input = document.createElement("input");
+            // 设置相应参数
+            input.type = "text";
+            input.name = "orderid";
+            input.value = f.orderid;
+            var input1 = document.createElement("input");
+            // 设置相应参数
+            input1.type = "text";
+            input1.name = "customerphone";
+            input1.value = f.customerphone;
+            // 创建一个输入
+            var input2 = document.createElement("input");
+            // 设置相应参数
+            input2.type = "text";
+            input2.name = "start";
+            input2.value = f.rcval1;
+            var input3 = document.createElement("input");
+            // 设置相应参数
+            input3.type = "text";
+            input3.name = "end";
+            input3.value = f.rcval2;
+            // 将该输入框插入到 form 中
+            form1.appendChild(input);
+            form1.appendChild(input1);
+            form1.appendChild(input2);
+            form1.appendChild(input3);
+            // form 的提交方式
+            form1.method = "POST";
+            // form 提交路径
+            form1.action = "/excel/ccdc";
+            // 对该 form 执行提交
+            form1.submit();
+            // 删除该 form
+            document.body.removeChild(form1);
+
+        },
+        //库存列表导出
+        exportExcelrc() {
+            let _$this = this;
+            var f = _$this.rcform;
+            // 创建一个 form
+            var form1 = document.createElement("form");
+            form1.pnumber = f.pnumber;
+            form1.sshg = f.sshg;
+            form1.rcval1 = f.rcval1;
+            form1.rcval2 = f.rcval2;
+            document.body.appendChild(form1);
+            // 创建一个输入
+            var input = document.createElement("input");
+            // 设置相应参数
+            input.type = "text";
+            input.name = "pnumber";
+            input.value = f.pnumber;
+            var input2 = document.createElement("input");
+            // 设置相应参数
+            input2.type = "text";
+            input2.name = "sshg";
+            input2.value = f.sshg;
+            // 创建一个输入
+            var input3 = document.createElement("input");
+            // 设置相应参数
+            input3.type = "text";
+            input3.name = "start";
+            input3.value = f.rcval1;
+            var input4 = document.createElement("input");
+            // 设置相应参数
+            input4.type = "text";
+            input4.name = "end";
+            input4.value = f.rcval2;
+            // 将该输入框插入到 form 中
+            form1.appendChild(input);
+            form1.appendChild(input2);
+            form1.appendChild(input3);
+            form1.appendChild(input4);
+            // form 的提交方式
+            form1.method = "POST";
+            // form 提交路径
+            form1.action = "/excel/rcdc";
+            // 对该 form 执行提交
+            form1.submit();
+            // 删除该 form
+            document.body.removeChild(form1);
+
+        },
+        //货柜信息导出
         exportExcel() {
-            $("#exceltable").table2excel({            //exceltable为存放数据的table
-                // 不被导出的表格行的CSS class类
-                exclude: ".noExl",
-                // 导出的Excel文档的名称
-                name: "坤越野会员" + new Date().getTime(),
-                // Excel文件的名称
-                filename: "坤越野会员" + new Date().getTime(),
-                bootstrap: false
-            });
+            let _$this = this;
+            var f = _$this.form;
+            // 创建一个 form
+            var form1 = document.createElement("form");
+            form1.gnumber = f.gnumber;
+            form1.phone = f.phone;
+            form1.banknumber = f.banknumber;
+            document.body.appendChild(form1);
+            // 创建一个输入
+            var input = document.createElement("input");
+            // 设置相应参数
+            input.type = "text";
+            input.name = "gnumber";
+            input.value = f.gnumber;
+            // 创建一个输入
+            var input2 = document.createElement("input");
+            // 设置相应参数
+            input2.type = "text";
+            input2.name = "phone";
+            input2.value = f.phone;
+            var input3 = document.createElement("input");
+            // 设置相应参数
+            input3.type = "text";
+            input3.name = "banknumber";
+            input3.value = f.banknumber;
+            // 将该输入框插入到 form 中
+            form1.appendChild(input);
+            form1.appendChild(input2);
+            form1.appendChild(input3);
+            // form 的提交方式
+            form1.method = "POST";
+            // form 提交路径
+            form1.action = "/excel/dc";
+            // 对该 form 执行提交
+            form1.submit();
+            // 删除该 form
+            document.body.removeChild(form1);
 
         },
         //上传服务
@@ -792,19 +376,20 @@ new Vue({
         },
         //清空数据
         qk(){
-            var newth = this;
+            let newth = this;
             this.$confirm('确定清空数据?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                var url = '/kunyueye/cleanTable';
+                var url = '/container/cleanTable';
                 $.ajax({
                     type: 'POST',
                     url: url,
                     dataType: 'json',
                     success: function (result) {
-                            newth.list();
+                        var lean = newth.tableData.length;
+                        newth.tableData.splice(null, lean);
                             newth.$message({
                                 message: '已清空',
                                 type: 'success'
@@ -825,43 +410,82 @@ new Vue({
         edit(){
             var editForm = this.editForm;
             var newthis = this;
-            if (editForm.name=="" || editForm.name==null) {
-                newthis.$message.error('真实姓名不能为空');
+            if (editForm.phone=="" || editForm.phone==null) {
+                newthis.$message.error('手机号不能为空');
                 return;
             }
-            if (editForm.num=="" || editForm.num==null) {
-                newthis.$message.error('编码不能为空');
+            if (editForm.gysfs=="" || editForm.gysfs==null) {
+                newthis.$message.error('运输方式不能为空');
                 return;
             }
-            if (editForm.sex=="" || editForm.sex==null) {
-                newthis.$message.error('性别不能为空');
+            if (editForm.gnumber=="" || editForm.gnumber==null) {
+                newthis.$message.error('货柜号不能为空');
                 return;
             }
-            if (editForm.dyname=="" || editForm.dyname==null) {
-                newthis.$message.error('打印字母不能为空');
+            if (editForm.gdbfs=="" || editForm.gdbfs==null) {
+                newthis.$message.error('打包方式不能为空');
                 return;
             }
-            var d = {
+            if (editForm.bankname=="" || editForm.bankname==null) {
+                newthis.$message.error('所属银行不能为空');
+                return;
+            }
+            if (editForm.cgdate=="" || editForm.cgdate==null) {
+                newthis.$message.error('出港时间不能为空');
+                return;
+            }
+            if (editForm.banknumber=="" || editForm.banknumber==null) {
+                newthis.$message.error('银行卡号不能为空');
+                return;
+            }
+            if (editForm.content=="" || editForm.content==null) {
+                newthis.$message.error('货柜内容不能为空');
+                return;
+            }
+            if (editForm.type=="" || editForm.type==null) {
+                newthis.$message.error('货柜类型不能为空');
+                return;
+            }
+            if (editForm.count=="" || editForm.count==null) {
+                newthis.$message.error('数量（件数）不能为空');
+                return;
+            }
+            if (editForm.price=="" || editForm.price==null) {
+                newthis.$message.error('货值不能为空');
+                return;
+            }
+           var  cgdate=  this.updateformatDate(editForm.cgdate);
+           var  dgdate=  this.updateformatDate(editForm.dgdate);
+            var m = {
+                'id': editForm.id,
                 'phone': editForm.phone,
-                'num': editForm.num,
-                'name': editForm.name,
-                'dyname': editForm.dyname,
-                'cm': editForm.cm,
-                'sex': editForm.sex,
-                'id': editForm.id
+                'gysfs': editForm.gysfs,
+                'gnumber': editForm.gnumber,
+                'gdbfs': editForm.gdbfs,
+                'gsize': editForm.gsize,
+                'bankname': editForm.bankname,
+                'cgdate': cgdate,
+                'banknumber': editForm.banknumber,
+                'content': editForm.content,
+                'dgdate': dgdate,
+                'type': editForm.type,
+                'status': editForm.status,
+                'count': editForm.count,
+                'dls': editForm.dls,
+                'price': editForm.price
             };
-            var url = '/kunyueye/update';
+            var url = '/container/updates';
             $.ajax({
                 type: 'POST',
                 url: url,
-                data: d,
+                data: m,
                 dataType: 'json',
                 success: function (result) {
                     if (result == 1) {
                         newthis.list();
                         newthis.editkun = false;
                         newthis.$message({
-                            message: '修改会员成功',
+                            message: '修改货柜信息成功',
                             type: 'success'
                         });
                     } else {
@@ -882,35 +506,62 @@ new Vue({
                 newthis.$message.error('手机号不能为空');
                 return;
             }
-            if (addForm.name=="" || addForm.name==null) {
-                newthis.$message.error('真实姓名不能为空');
+            if (addForm.gysfs=="" || addForm.gysfs==null) {
+                newthis.$message.error('运输方式不能为空');
                 return;
             }
-            if (addForm.num=="" || addForm.num==null) {
-                newthis.$message.error('编码不能为空');
+            if (addForm.gnumber=="" || addForm.gnumber==null) {
+                newthis.$message.error('货柜号不能为空');
                 return;
             }
-            if (addForm.cm=="" || addForm.cm==null) {
-                newthis.$message.error('尺码不能为空');
+            if (addForm.gdbfs=="" || addForm.gdbfs==null) {
+                newthis.$message.error('打包方式不能为空');
                 return;
             }
-            if (addForm.sex=="" || addForm.sex==null) {
-                newthis.$message.error('性别不能为空');
+            if (addForm.bankname=="" || addForm.bankname==null) {
+                newthis.$message.error('所属银行不能为空');
                 return;
             }
-            if (addForm.dyname=="" || addForm.dyname==null) {
-                newthis.$message.error('打印字母不能为空');
+            if (addForm.cgdate=="" || addForm.cgdate==null) {
+                newthis.$message.error('出港时间不能为空');
+                return;
+            }
+            if (addForm.banknumber=="" || addForm.banknumber==null) {
+                newthis.$message.error('银行卡号不能为空');
+                return;
+            }
+            if (addForm.content=="" || addForm.content==null) {
+                newthis.$message.error('货柜内容不能为空');
+                return;
+            }
+            if (addForm.type=="" || addForm.type==null) {
+                newthis.$message.error('货柜类型不能为空');
+                return;
+            }
+            if (addForm.count=="" || addForm.count==null) {
+                newthis.$message.error('数量（件数）不能为空');
+                return;
+            }
+            if (addForm.price=="" || addForm.price==null) {
+                newthis.$message.error('货值不能为空');
                 return;
             }
             var d = {
                 'phone': addForm.phone,
-                'num': addForm.num,
-                'name': addForm.name,
-                'dyname': addForm.dyname,
-                'cm': addForm.cm,
-                'sex': addForm.sex
+                'gysfs': addForm.gysfs,
+                'gnumber': addForm.gnumber,
+                'gdbfs': addForm.gdbfs,
+                'gsize': addForm.gsize,
+                'bankname': addForm.bankname,
+                'cgdate': addForm.cgdate,
+                'banknumber': addForm.banknumber,
+                'content': addForm.content,
+                'type': addForm.type,
+                'count': addForm.count,
+                'dls': addForm.dls,
+                'price': addForm.price
             };
-            var url = '/kunyueye/add';
+            var url = '/container/add';
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -921,7 +572,7 @@ new Vue({
                         newthis.list();
                         newthis.addkun = false;
                         newthis.$message({
-                            message: '恭喜你，添加会员成功',
+                            message: '恭喜你，添加货柜成功',
                             type: 'success'
                         });
                     } else {
@@ -941,16 +592,46 @@ new Vue({
             self.addForm = [];
             self.addkun = true;
         },
+        //打开出仓单界面
+        ccopen(){
+            let self = this;
+            self.ccdlog = true;
+
+        },
+        //打开入仓单界面
+        rcopen(){
+            let self = this;
+            self.rcdlog = true;
+        },
         //条件搜索
-        seach (){
-            var form = this.form;
+        seachjxc (){
+            var jxcform = this.jxcform;
             var _$this = this;
+
+
+            var dd1="";
+            var dd2="";
+            if (jxcform.rcval1==null || jxcform.rcval1=="") {
+                dd1="";
+                // return;
+            }else {
+                dd1 = _$this.formatDates(jxcform.rcval1);
+            }
+            if (jxcform.rcval2==null || jxcform.rcval2=="") {
+                dd2="";
+            }else{
+                //return;
+                dd2 = _$this.formatDates(jxcform.rcval2)
+            }
+
             var d = {
-                'name': form.name,
-                'num': form.num,
-                'phone': form.phone
+                'pnumber': jxcform.pnumber,
+                'customerphone': jxcform.customerphone,
+                'rcval1': dd1,
+                'rcval2': dd2
             };
-            var url = '/kunyueye/seach_ht';
+
+            var url = '/jxc/seach_ht';
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -958,10 +639,8 @@ new Vue({
                 dataType: 'json',
                 success: function (result) {
                     if (result.length>0) {
-                        _$this.conuntsize = result.length;
-                        _$this.tableData = result;
+                        _$this.tableData4 = result;
                     } else {
-                        _$this.conuntsize = result.length;
                         _$this.tableData = [];
                     }
 
@@ -972,9 +651,149 @@ new Vue({
                 }
             });
         },
+        //条件搜索
+        seach (){
+            var form = this.form;
+            var _$this = this;
+            var d = {
+                'gnumber': form.gnumber,
+                'banknumber': form.banknumber,
+                'phone': form.phone
+            };
+            var url = '/container/seach_ht';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: d,
+                dataType: 'json',
+                success: function (result) {
+                    if (result.length>0) {
+                        _$this.tableData = result;
+                    } else {
+                        _$this.tableData = [];
+                    }
+
+                },
+                error: function () {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        //出仓条件查询
+        seachcc() {
+            var ccform = this.ccform;
+            var _$this = this;
+            var dd1="";
+            var dd2="";
+            if (ccform.rcval1==null || ccform.rcval1=="") {
+
+                dd1="";
+                // return;
+            }else {
+
+                dd1 = _$this.formatDates(ccform.rcval1);
+            }
+            if (ccform.rcval2==null || ccform.rcval2=="") {
+                dd2="";
+            }else{
+                //return;
+                dd2 = _$this.formatDates(ccform.rcval2)
+            }
+
+            var d = {
+                'orderid': ccform.orderid,
+                'customerphone': ccform.customerphone,
+                'rcval1': dd1,
+                'rcval2': dd2,
+            };
+            var url = '/cc/seach_ht';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: d,
+                dataType: 'json',
+                success: function (result) {
+                    if (result.length>0) {
+                        _$this.tableData3 = result;
+                    } else {
+                        _$this.tableData3 = [];
+                    }
+
+                },
+                error: function () {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        //入仓条件搜索
+        seachrc() {
+            var rcform = this.rcform;
+            var _$this = this;
+            var dd1="";
+            var dd2="";
+            if (rcform.rcval1==null || rcform.rcval1=="") {
+
+                dd1="";
+               // return;
+            }else {
+
+                dd1 = _$this.formatDates(rcform.rcval1);
+            }
+            if (rcform.rcval2==null || rcform.rcval2=="") {
+                dd2="";
+            }else{
+                //return;
+                dd2 = _$this.formatDates(rcform.rcval2)
+            }
+
+            var d = {
+                'pnumber': rcform.pnumber,
+                'sshg': rcform.sshg,
+                'rcval1': dd1,
+                'rcval2': dd2,
+            };
+            var url = '/rc/seach_ht';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: d,
+                dataType: 'json',
+                success: function (result) {
+                    if (result.length>0) {
+                        _$this.tableData2 = result;
+                    } else {
+                        _$this.tableData2 = [];
+                    }
+
+                },
+                error: function () {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        jxclist () {
+            var newthis = this;
+            var url = '/jxc/lists';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                dataType: 'json',
+                success: function (result) {
+                    if (result.length>0) {
+                        newthis.tableData4 = result;
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        },
         list () {
             var newthis = this;
-            var url = '/kunyueye/lists';
+            var url = '/container/lists';
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -998,7 +817,7 @@ new Vue({
             let self = this;
             self.editForm=[];
             self.editkun=true;
-            var url = '/kunyueye/editselect';
+            var url = '/container/editselect';
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -1017,6 +836,13 @@ new Vue({
             let dt = new Date(d)
             return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate()
         },
+        updateformatDate(d) {
+            // 获取单元格数据
+            let dt = new Date(d)
+            return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds();
+
+        },
+
         //时间格式化
         formatDate(row, column) {
             // 获取单元格数据
@@ -1027,15 +853,15 @@ new Vue({
             let dt = new Date(data)
             return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds();
         },
-        //删除
-        handleDelete(index, row) {
-            var newth = this;
-            this.$confirm('确定删除该条报名?', '提示', {
+        //删除进销存
+        handleDeletejxc(index, row) {
+            this.$confirm('确定删除该条信息?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                var url = '/kunyueye/del';
+                let nthis = this;
+                var url = '/jxc/del';
                 $.ajax({
                     type: 'POST',
                     url: url,
@@ -1043,13 +869,13 @@ new Vue({
                     dataType: 'json',
                     success: function (result) {
                         if (result == 1) {
-                            newth.list();
-                            newth.$message({
+                            nthis.tableData4.splice(index, 1);
+                            nthis.$message({
                                 message: '恭喜你，删除成功',
                                 type: 'success'
                             });
                         } else {
-                            newth.$message.error('很遗憾，删除失败');
+                            nthis.$message.error('很遗憾，删除失败');
                         }
                     },
                     error: function () {
@@ -1057,15 +883,203 @@ new Vue({
                     }
                 });
             }).catch(() => {
-                newth.$notify.error({
+                nthis.$notify.error({
                     title: '取消删除',
                     message: '取消删除！'
                 });
             });
             console.log(index, row);
         },
+        //删除
+        handleDelete(index, row) {
+            this.$confirm('确定删除该条报名?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                let nthis = this;
+                var url = '/container/del';
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {'id': row.id},
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result == 1) {
+                            nthis.tableData.splice(index, 1);
+                            nthis.$message({
+                                message: '恭喜你，删除成功',
+                                type: 'success'
+                            });
+                        } else {
+                            nthis.$message.error('很遗憾，删除失败');
+                        }
+                    },
+                    error: function () {
+
+                    }
+                });
+            }).catch(() => {
+                nthis.$notify.error({
+                    title: '取消删除',
+                    message: '取消删除！'
+                });
+            });
+            console.log(index, row);
+        },
+        //出仓删除
+        handleDeletecc(index, row) {
+            this.$confirm('确定删除该条报名?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                let nthis = this;
+                var url = '/cc/del';
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {'id': row.id},
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result == 1) {
+                            nthis.tableData3.splice(index, 1);
+                            nthis.$message({
+                                message: '恭喜你，删除成功',
+                                type: 'success'
+                            });
+                        } else {
+                            nthis.$message.error('很遗憾，删除失败');
+                        }
+                    },
+                    error: function () {
+
+                    }
+                });
+            }).catch(() => {
+                nthis.$notify.error({
+                    title: '取消删除',
+                    message: '取消删除！'
+                });
+            });
+            console.log(index, row);
+        },
+        //入仓删除
+        handleDeleterc(index, row) {
+            this.$confirm('确定删除该条报名?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                let nthis = this;
+                var url = '/rc/del';
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {'id': row.id},
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result == 1) {
+                            nthis.tableData2.splice(index, 1);
+                            nthis.$message({
+                                message: '恭喜你，删除成功',
+                                type: 'success'
+                            });
+                        } else {
+                            nthis.$message.error('很遗憾，删除失败');
+                        }
+                    },
+                    error: function () {
+
+                    }
+                });
+            }).catch(() => {
+                nthis.$notify.error({
+                    title: '取消删除',
+                    message: '取消删除！'
+                });
+            });
+            console.log(index, row);
+        },
+
         handleSelectionChange(val) {
             this.multipleSelection = val;
+        },
+        handleSelectionChangegl(val) {
+            this.multipleSelection = val;
+        },
+        handleSelectionChangejxc(val) {
+            this.multipleSelection = val;
+        },
+
+        //table标签触发事件
+        tableclick (tab, event){
+            var newthis = this;
+            if(tab.index==0) {
+                newthis.list();
+            }
+            if(tab.index==1) {
+                newthis.listrc();
+                setTimeout(function (){
+                    newthis.getSummariesrc();
+                },1500);
+            }
+            if(tab.index==2) {
+                newthis.listcc();
+                setTimeout(function (){
+                    newthis.getSummariescc();
+                },1500);
+            }
+            if(tab.index==3) {
+                newthis.jxclist();
+                setTimeout(function (){
+                    newthis.getSummariesjxc();
+                },1500);
+            }
+        },
+        //list search
+        listcc () {
+            var newthis = this;
+            var url = '/cc/lists';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                // data: {'id': newthis.input1},
+                dataType: 'json',
+                success: function (result) {
+                    if (result.length>0) {
+                        newthis.tableData3 = result;
+                        newthis.loading=false;
+                    } else {
+                        newthis.loading=false;
+                    }
+                },
+                error: function () {
+
+                }
+            });
+        },
+        //list search
+        listrc () {
+            var newthis = this;
+            var url = '/rc/lists';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                // data: {'id': newthis.input1},
+                dataType: 'json',
+                success: function (result) {
+                    if (result.length>0) {
+                        newthis.tableData2 = result;
+                        newthis.loading=false;
+                    } else {
+                        newthis.loading=false;
+                    }
+                },
+                error: function () {
+
+                }
+            });
         },
         // 初始页currentPage、初始每页数据数pagesize和数据data
         handleSizeChange: function (size) {
@@ -1076,5 +1090,607 @@ new Vue({
             this.currentPage = currentPage;
             console.log(this.currentPage)  //点击第几页
         },
+        // 初始页currentPage、初始每页数据数pagesize和数据data
+        handleSizeChangegl: function (size) {
+            this.pagesizegl = size;
+            console.log(this.pagesizegl)  //每页下拉显示数据
+        },
+        handleCurrentChangegl: function (currentPagegl) {
+            this.currentPagegl = currentPagegl;
+            console.log(this.currentPagegl)  //点击第几页
+        },
+        // 初始页currentPage、初始每页数据数pagesize和数据data
+        handleSizeChangerc: function (size) {
+            this.pagesizerc = size;
+            console.log(this.pagesizerc)  //每页下拉显示数据
+        },
+        handleCurrentChangerc: function (currentPagerc) {
+            this.currentPagerc = currentPagerc;
+            console.log(this.currentPagerc)  //点击第几页
+        },
+        // 初始页currentPage、初始每页数据数pagesize和数据data
+        handleSizeChangejxc: function (size) {
+            this.pagesizejxc = size;
+            console.log(this.pagesizejxc)  //每页下拉显示数据
+        },
+        handleCurrentChangejxc: function (currentPagejxc) {
+            this.currentPagejxc = currentPagejxc;
+            console.log(this.currentPagejxc)  //点击第几页
+        },
+        handleSizeChangecc: function (size) {
+            this.pagesizecc = size;
+            console.log(this.pagesizecc)  //每页下拉显示数据
+        },
+        handleCurrentChangecc: function (currentPagerc) {
+            this.currentPagecc = currentPagecc;
+            console.log(this.currentPagecc)  //点击第几页
+        },
+        handleSelectionChangerc(val) {
+            this.multipleSelection = val;
+        },
+        handleSelectionChangecc(val) {
+            this.multipleSelection = val;
+        },
+        //出仓动态添加物品信息
+        addOrHanldercc(index) {
+            let obj = {
+                pnumber: '',
+                pname: '',
+                color: '',
+                ccprice: '',
+                cccount: '',
+                ccsumprice: '',
+                type: '',
+                indexid: index+1
+            };
+            this.ccdynamicValidateForm.rcdetil.push(obj);
+        },
+        //入仓动态添加物品信息
+        addOrHanlderrc(index) {
+            let obj = {
+                pnumber: '',
+                pname: '',
+                color: '',
+                costprice: '',
+                costcount: '',
+                rccount: '',
+                type: '',
+                rcdate: '',
+                indexid: index+1
+            };
+            this.rcdynamicValidateForm.rcdetil.push(obj);
+        },
+        //入仓动态添加物品信息删除行
+        deleteOrHandlerrc(every, index) {
+            this.rcdynamicValidateForm.rcdetil.splice(index, 1);
+        },
+        //出仓动态添加物品信息删除行
+        deleteOrHandlercc(every, index) {
+            this.ccdynamicValidateForm.rcdetil.splice(index, 1);
+        },
+        //入库取消
+        fh () {
+            this.rcdlog=false;
+            this.rcdynamicValidateForm={
+                rcdetil: [{
+                    pnumber: '',
+                    pname: '',
+                    color: '',
+                    costprice: '',
+                    costcount: '',
+                    rccount: '',
+                    type: '',
+                    bz: '',
+                    gys: '',
+                    sshg: '',
+                    rcdate: ''
+                }]
+            }
+        },
+        //出库取消
+        ccfh(){
+            this.ccdlog=false;
+            this.ccorder = Date.now();
+        },
+        //保存出库单
+        orSaveHandlercc(){
+            var flag=0;
+            var k =[];
+            var from = this.ccdynamicValidateForm;
+            var list = JSON.stringify(from.rcdetil);
+
+            var newthis = this;
+            if (from.customername=="" || from.customername==null){
+                newthis.$message.error('客户姓名为空');
+                return;
+            }
+            if (from.customeraddress =="" || from.customeraddress==null){
+                newthis.$message.error('运输地址为空');
+                return;
+            }
+            if (from.ccdate =="" || from.ccdate==null){
+                newthis.$message.error('出库时间为空');
+                return;
+            }
+
+            if (from.customerphone =="" || from.customerphone==null){
+                newthis.$message.error('客户联系电话为空');
+                return;
+            }
+            for(var h=0;h<from.rcdetil.length;h++){
+                    if (from.rcdetil[h].pnumber=="" || from.rcdetil[h].pnumber==null){
+                        newthis.$message.error('商品'+(h+1)+'编码为空');
+                        return;
+                    }
+                    if (from.rcdetil[h].pname=="" || from.rcdetil[h].pname==null){
+                        newthis.$message.error('商品'+(h+1)+'名称为空');
+                        return;
+                    }
+
+                    if (from.rcdetil[h].cccount=="" || from.rcdetil[h].cccount==null){
+                        newthis.$message.error('商品'+(h+1)+'出仓数量为空');
+                        return;
+                    }
+
+                    if (from.rcdetil[h].color=="" || from.rcdetil[h].color==null){
+                        newthis.$message.error('商品'+(h+1)+'颜色为空');
+                        return;
+                    }
+                    if (from.rcdetil[h].type=="" || from.rcdetil[h].type==null){
+                        newthis.$message.error('商品'+(h+1)+'规格为空');
+                        return;
+                    }
+                    if (from.rcdetil[h].ccprice=="" || from.rcdetil[h].ccprice==null){
+                        newthis.$message.error('商品'+(h+1)+'单价为空');
+                        return;
+                    }
+                //根据商品 pnumber 查询该商品的的库存数
+                //请求后台
+                var urls = '/rc/selectrccount';
+                $.ajax({
+                    type: 'POST',
+                    url: urls,
+                    async:false,
+                    data: {'pnumber': from.rcdetil[h].pnumber,'cccount':from.rcdetil[h].cccount},
+                    dataType: 'json',
+                    success: function (res) {
+                        //比较输入的是否超出 如果超出则进行提示 不予通过
+                        if (res==1) {
+                            newthis.flag=1;
+                            return false;
+                        }
+                        if(res==3) {
+                            newthis.flag=2;
+                            return false;
+                        }
+                    },
+                    error: function () {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+
+            }
+            if(newthis.flag==1){
+                newthis.$message.error('商品存在库存不足！！！');
+                newthis.flag="0";
+                return;
+            }
+            if(newthis.flag==3){
+                newthis.$message.error('目前仓库中无该商品，无法下单');
+                newthis.flag="0";
+                return;
+            }
+            var d = {
+                'list': list,
+                'ccorder':newthis.ccorder,
+                'customerphone':from.customerphone,
+                'customername':from.customername,
+                'customeraddress':from.customeraddress,
+                'ccdate':JSON.stringify(from.ccdate)
+            };
+            //请求后台
+            var url = '/cc/add';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: d,
+                dataType: 'json',
+                success: function (result) {
+                    if (result == 1) {
+                        newthis.ccdlog=false;
+                        newthis.$message({
+                            message: '保存成功',
+                            type: 'success'
+                        });
+                        newthis.listcc();
+                    } else {
+                        newthis.$message.error('设置失败');
+                    }
+                },
+                error: function () {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+            console.log('submit!');
+        },
+        //保存入库单
+        orSaveHandlerrc(){
+            var from = this.rcdynamicValidateForm;
+            var list = JSON.stringify(from.rcdetil);
+
+            var newthis = this;
+            for(var h=0;h<from.rcdetil.length;h++){
+                if (from.rcdetil[h].qcs=="" || from.rcdetil[h].qcs==null){
+                    from.rcdetil[h].qcs ="0";
+                }
+                if (from.rcdetil[h].pnumber=="" || from.rcdetil[h].pnumber==null){
+                    newthis.$message.error('商品'+(h+1)+'编码为空');
+                    return;
+                }
+                if (from.rcdetil[h].pname=="" || from.rcdetil[h].pname==null){
+                    newthis.$message.error('商品'+(h+1)+'名称为空');
+                    return;
+                }
+                if (from.rcdetil[h].rcdate=="" || from.rcdetil[h].rcdate==null){
+                    newthis.$message.error('商品'+(h+1)+'入仓时间为空');
+                    return;
+                }
+                if (from.rcdetil[h].pnumber=="" || from.rcdetil[h].pnumber==null){
+                    newthis.$message.error('商品'+(h+1)+'编码为空');
+                    return;
+                }
+                if (from.rcdetil[h].rccount=="" || from.rcdetil[h].rccount==null){
+                    newthis.$message.error('商品'+(h+1)+'入仓适量为空');
+                    return;
+                }
+                if (from.rcdetil[h].color=="" || from.rcdetil[h].color==null){
+                    newthis.$message.error('商品'+(h+1)+'颜色为空');
+                    return;
+                }
+                if (from.rcdetil[h].gys=="" || from.rcdetil[h].gys==null){
+                    newthis.$message.error('商品'+(h+1)+'供应商信息为空');
+                    return;
+                }
+                if (from.rcdetil[h].type=="" || from.rcdetil[h].type==null){
+                    newthis.$message.error('商品'+(h+1)+'规格为空');
+                    return;
+                }
+                if (from.rcdetil[h].costprice=="" || from.rcdetil[h].costprice==null){
+                    newthis.$message.error('商品'+(h+1)+'成本单价为空');
+                    return;
+                }
+                if (from.rcdetil[h].sshg=="" || from.rcdetil[h].sshg==null){
+                    newthis.$message.error('商品'+(h+1)+'所属货柜编码为空');
+                    return;
+                }
+            }
+            var d = {
+                'list': list,
+            };
+            //请求后台
+            var url = '/rc/add';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: d,
+                dataType: 'json',
+                success: function (result) {
+                    if (result == 1) {
+                        newthis.rcdlog=false;
+                        newthis.$message({
+                            message: '保存成功',
+                            type: 'success'
+                        });
+                        newthis.listrc();
+                    } else {
+                        newthis.$message.error('设置失败');
+                    }
+                },
+                error: function () {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+            console.log('submit!');
+        },
+        rcs(index){
+            var newthis =this;
+           var s1 = parseInt(this.rcdynamicValidateForm.rcdetil[index].rccount);
+           var s2 = parseInt(this.rcdynamicValidateForm.rcdetil[index].costprice);
+            if (Number.isNaN(s1)){
+                newthis.$message.error('入库数为空，请填写入库数');
+                return;
+            }
+            if (Number.isNaN(s2)){
+                newthis.$message.error('成本单价为空，请填写入成本单价');
+                return;
+            }
+            document.getElementById(index).value = s1 * s2;
+        },
+        cbdj(index){
+            var newthis =this;
+            var s1 = parseInt(this.rcdynamicValidateForm.rcdetil[index].rccount);
+            var s2 = parseInt(this.rcdynamicValidateForm.rcdetil[index].costprice);
+            if (Number.isNaN(s1)){
+                newthis.$message.error('入库数为空，请填写入库数');
+                return;
+            }
+            if (Number.isNaN(s2)){
+                newthis.$message.error('成本单价为空，请填写入成本单价');
+                return;
+            }
+            document.getElementById(index).value = s1 * s2;
+        },
+        //出库计算
+        rescc(index){
+            var newthis =this;
+            var s1 = parseInt(this.ccdynamicValidateForm.rcdetil[index].cccount);
+            var s2 = parseInt(this.ccdynamicValidateForm.rcdetil[index].ccprice);
+            if (Number.isNaN(s1)){
+                newthis.$message.error('出库数为空，请填写出库数');
+                return;
+            }
+            if (Number.isNaN(s2)){
+                newthis.$message.error('单价为空，请填输入单价');
+                return;
+            }
+            document.getElementById(index).value = s1 * s2;
+        },
+        cbdjcc(index){
+            var newthis =this;
+            var s1 = parseInt(this.ccdynamicValidateForm.rcdetil[index].cccount);
+            var s2 = parseInt(this.ccdynamicValidateForm.rcdetil[index].ccprice);
+            if (Number.isNaN(s1)){
+                newthis.$message.error('出库数为空，请填写出库数');
+                return;
+            }
+            if (Number.isNaN(s2)){
+                newthis.$message.error('单价为空，请填输入单价');
+                return;
+            }
+            document.getElementById(index).value = s1 * s2;
+        },
+
+        //入库
+        getSummariesrc(param) {
+            const { columns, data } = param;
+            const sums = [];
+            columns.forEach((column, index) => {
+                if (index === 0) {
+                    sums[index] = '合 计';
+                    return;
+                }
+
+                if (index === 1) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 2) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 3) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 4) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 5) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 9) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 10) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 11) {
+                    sums[index] = ' ';
+                    return;
+                }
+
+
+                const values = data.map(item => Number(item[column.property]));
+                if (!values.every(value => isNaN(value))) {
+                    sums[index] = values.reduce((prev, curr) => {
+                        const value = Number(curr);
+                        if (!isNaN(value)) {
+                            return prev + curr;
+                        } else {
+                            return prev;
+                        }
+                    }, 0);
+                    if(index ===8) {
+                        sums[index] += ' 件';
+                    }else if(index ===6) {
+                        sums[index] += ' 件';
+                    } else if(index ===7) {
+                        sums[index] += ' 件';
+                    } else {
+                        sums[index] += ' ';
+                    }
+
+
+                } else {
+                    sums[index] = 'N/A';
+                }
+            });
+
+            return sums;
+        },
+        //进销存合计
+        getSummariesjxc(param) {
+            const { columns, data } = param;
+            const sums = [];
+            columns.forEach((column, index) => {
+                if (index === 0) {
+                    sums[index] = '合 计';
+                    return;
+                }
+
+                if (index === 1) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 2) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 3) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 4) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 11) {
+                    sums[index] = ' ';
+                    return;
+                }
+
+
+                const values = data.map(item => Number(item[column.property]));
+                if (!values.every(value => isNaN(value))) {
+                    sums[index] = values.reduce((prev, curr) => {
+                        const value = Number(curr);
+                        if (!isNaN(value)) {
+                            return prev + curr;
+                        } else {
+                            return prev;
+                        }
+                    }, 0);
+                    if(index ===8) {
+                        sums[index] += ' 件';
+                    }else if(index ===9) {
+                        sums[index] += ' 件';
+                    } else if(index ===10) {
+                        sums[index] += ' 件';
+                    } else if(index ===5) {
+                        sums[index] += ' 件';
+                    } else if(index ===6) {
+                        sums[index] += ' 件';
+                    } else if(index ===7) {
+                        sums[index] += ' 件';
+                    } else {
+                        sums[index] += ' ';
+                    }
+
+
+                } else {
+                    sums[index] = 'N/A';
+                }
+            });
+
+            return sums;
+        },
+        getSummariescc(param) {
+            const { columns, data } = param;
+            const sums = [];
+            columns.forEach((column, index) => {
+                if (index === 0) {
+                    sums[index] = '合 计';
+                    return;
+                }
+                if (index === 1) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 2) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 3) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 4) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 5) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 6) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 10) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 11) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 12) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 13) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 14) {
+                    sums[index] = ' ';
+                    return;
+                }
+                const values = data.map(item => Number(item[column.property]));
+                if (!values.every(value => isNaN(value))) {
+                    sums[index] = values.reduce((prev, curr) => {
+                        const value = Number(curr);
+                        if (!isNaN(value)) {
+                            return prev + curr;
+                        } else {
+                            return prev;
+                        }
+                    }, 0);
+                    if(index ===8) {
+                        sums[index] += ' 元';
+                    }else if(index ===9) {
+                        sums[index] += ' 元';
+                    } else {
+                        sums[index] += ' ';
+                    }
+
+
+                } else {
+                    sums[index] = 'N/A';
+                }
+            });
+
+            return sums;
+        },
+        //点击行事件
+        rowclick(row, column, event) {
+            var newthis = this;
+            var d = {
+                'gnumber': row.gnumber,
+            };
+            //请求后台
+            var url = '/rc/gl';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: d,
+                dataType: 'json',
+                success: function (result) {
+                    newthis.tableData5 = result;
+                },
+                error: function () {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+
+        }
     }
 })
