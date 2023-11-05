@@ -14,16 +14,17 @@
     <result column="pdcount" property="pdcount" jdbcType="VARCHAR" />
     <result column="cycount" property="cycount" jdbcType="VARCHAR" />
     <result column="bz" property="bz" jdbcType="VARCHAR" />
+    <result column="pdstatus" property="pdstatus" jdbcType="VARCHAR" />
   </resultMap>
   <select id="selectAll" resultMap="BaseResultMap" >
     select id, pnumber, pname, color, type, qcs, rccount, cccount, jccount, pdcount, 
-    cycount, bz
+    cycount, bz,pdstatus
     from jxctable
   </select>
   <!--根据产品编码查询进销存是否存在-->
   <select id="selectByPnamber" resultType="com.example.LqcSpringBoot.model.Jxctable">
     select id, pnumber, pname, color, type, qcs, rccount, cccount, jccount, pdcount,
-           cycount, bz
+           cycount, bz,pdstatus
     from jxctable where pnumber = #{pnumber}
   </select>
   <!--条件查询-->
@@ -31,9 +32,6 @@
     select * from jxctable  where 1=1
     <if test="pnumber != null and pnumber != ''">
       AND pnumber = #{pnumber}
-    </if>
-    <if test="customerphone != null and customerphone != ''">
-      AND customerphone = #{customerphone}
     </if>
     <if test="start != null and start!=''">
       AND ccdate &gt;= #{start}

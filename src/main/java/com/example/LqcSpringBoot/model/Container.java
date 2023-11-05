@@ -10,7 +10,6 @@ public class Container implements Serializable {
 
     private String gnumber;
 
-    private String gdbfs;
 
     private String gsize;
 
@@ -61,13 +60,6 @@ public class Container implements Serializable {
         this.gnumber = gnumber == null ? null : gnumber.trim();
     }
 
-    public String getGdbfs() {
-        return gdbfs;
-    }
-
-    public void setGdbfs(String gdbfs) {
-        this.gdbfs = gdbfs == null ? null : gdbfs.trim();
-    }
 
     public String getGsize() {
         return gsize;

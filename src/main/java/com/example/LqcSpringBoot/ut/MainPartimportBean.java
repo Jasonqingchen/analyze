@@ -71,102 +71,95 @@ public class MainPartimportBean {
                 cell = sheet.getRow(i).getCell((short)1);
                 if(cell!=null){
                     sheet.getRow(i).getCell(1).setCellType(CellType.STRING);
-                    gdbfs =sheet.getRow(i).getCell(1).getStringCellValue();
-                    mp1.setGdbfs(gdbfs);
+                    gysfs =sheet.getRow(i).getCell(1).getStringCellValue();
+                    mp1.setGysfs(gysfs);
 
                 }
                 cell = sheet.getRow(i).getCell((short)2);
                 if(cell!=null){
                     sheet.getRow(i).getCell(2).setCellType(CellType.STRING);
-                    gysfs =sheet.getRow(i).getCell(2).getStringCellValue();
-                    mp1.setGysfs(gysfs);
+                    phone =sheet.getRow(i).getCell(2).getStringCellValue();
+                    mp1.setPhone(phone);
 
                 }
                 cell = sheet.getRow(i).getCell((short)3);
                 if(cell!=null){
                     sheet.getRow(i).getCell(3).setCellType(CellType.STRING);
-                    phone =sheet.getRow(i).getCell(3).getStringCellValue();
-                    mp1.setPhone(phone);
+                    bankname =sheet.getRow(i).getCell(3).getStringCellValue();
+                    mp1.setBankname(bankname);
 
                 }
                 cell = sheet.getRow(i).getCell((short)4);
                 if(cell!=null){
                     sheet.getRow(i).getCell(4).setCellType(CellType.STRING);
-                    bankname =sheet.getRow(i).getCell(4).getStringCellValue();
-                    mp1.setBankname(bankname);
+                    banknumber =sheet.getRow(i).getCell(4).getStringCellValue();
+                    mp1.setBanknumber(banknumber);
 
                 }
                 cell = sheet.getRow(i).getCell((short)5);
                 if(cell!=null){
                     sheet.getRow(i).getCell(5).setCellType(CellType.STRING);
-                    banknumber =sheet.getRow(i).getCell(5).getStringCellValue();
-                    mp1.setBanknumber(banknumber);
+                    gsize =sheet.getRow(i).getCell(5).getStringCellValue();
+                    mp1.setGsize(gsize);
 
                 }
                 cell = sheet.getRow(i).getCell((short)6);
                 if(cell!=null){
                     sheet.getRow(i).getCell(6).setCellType(CellType.STRING);
-                    gsize =sheet.getRow(i).getCell(6).getStringCellValue();
-                    mp1.setGsize(gsize);
-
-                }
-                cell = sheet.getRow(i).getCell((short)7);
-                if(cell!=null){
-                    sheet.getRow(i).getCell(7).setCellType(CellType.STRING);
-                    cgdate =sheet.getRow(i).getCell(7).getStringCellValue();
+                    cgdate =sheet.getRow(i).getCell(6).getStringCellValue();
                     Date date = org.apache.poi.ss.usermodel.DateUtil
                             .getJavaDate(Double.valueOf(cgdate));
                     mp1.setCgdate(format.format(date));
 
                 }
-                cell = sheet.getRow(i).getCell((short)8);
+                cell = sheet.getRow(i).getCell((short)7);
                 if(cell!=null){
-                    sheet.getRow(i).getCell(8).setCellType(CellType.STRING);
-                    dgdate =sheet.getRow(i).getCell(8).getStringCellValue();
+                    sheet.getRow(i).getCell(7).setCellType(CellType.STRING);
+                    dgdate =sheet.getRow(i).getCell(7).getStringCellValue();
                     Date date = org.apache.poi.ss.usermodel.DateUtil
                             .getJavaDate(Double.valueOf(dgdate));
                     mp1.setDgdate(format.format(date));
 
                 }
+                cell = sheet.getRow(i).getCell((short)8);
+                if(cell!=null){
+                    sheet.getRow(i).getCell(8).setCellType(CellType.STRING);
+                    status =sheet.getRow(i).getCell(8).getStringCellValue();
+                    mp1.setStatus(status);
+
+                }
                 cell = sheet.getRow(i).getCell((short)9);
                 if(cell!=null){
                     sheet.getRow(i).getCell(9).setCellType(CellType.STRING);
-                    status =sheet.getRow(i).getCell(9).getStringCellValue();
-                    mp1.setStatus(status);
+                    dls =sheet.getRow(i).getCell(9).getStringCellValue();
+                    mp1.setDls(dls);
 
                 }
                 cell = sheet.getRow(i).getCell((short)10);
                 if(cell!=null){
                     sheet.getRow(i).getCell(10).setCellType(CellType.STRING);
-                    dls =sheet.getRow(i).getCell(10).getStringCellValue();
-                    mp1.setDls(dls);
+                    type =sheet.getRow(i).getCell(10).getStringCellValue();
+                    mp1.setType(type);
 
                 }
                 cell = sheet.getRow(i).getCell((short)11);
                 if(cell!=null){
                     sheet.getRow(i).getCell(11).setCellType(CellType.STRING);
-                    type =sheet.getRow(i).getCell(11).getStringCellValue();
-                    mp1.setType(type);
+                    count =sheet.getRow(i).getCell(11).getStringCellValue();
+                    mp1.setCount(count);
 
                 }
                 cell = sheet.getRow(i).getCell((short)12);
                 if(cell!=null){
                     sheet.getRow(i).getCell(12).setCellType(CellType.STRING);
-                    count =sheet.getRow(i).getCell(12).getStringCellValue();
-                    mp1.setCount(count);
+                    price =sheet.getRow(i).getCell(12).getStringCellValue();
+                    mp1.setPrice(price);
 
                 }
                 cell = sheet.getRow(i).getCell((short)13);
                 if(cell!=null){
                     sheet.getRow(i).getCell(13).setCellType(CellType.STRING);
-                    price =sheet.getRow(i).getCell(13).getStringCellValue();
-                    mp1.setPrice(price);
-
-                }
-                cell = sheet.getRow(i).getCell((short)14);
-                if(cell!=null){
-                    sheet.getRow(i).getCell(14).setCellType(CellType.STRING);
-                    content =sheet.getRow(i).getCell(14).getStringCellValue();
+                    content =sheet.getRow(i).getCell(13).getStringCellValue();
                     mp1.setContent(content);
 
                 }

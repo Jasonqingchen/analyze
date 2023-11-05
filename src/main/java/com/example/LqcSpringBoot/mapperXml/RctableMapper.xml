@@ -15,10 +15,12 @@
     <result column="gys" property="gys" jdbcType="VARCHAR" />
     <result column="pname" property="pname" jdbcType="VARCHAR" />
     <result column="qcs" property="qcs" jdbcType="VARCHAR" />
+    <result column="dbfs" property="qcs" jdbcType="VARCHAR" />
+    <result column="rcfs" property="rcfs" jdbcType="VARCHAR" />
   </resultMap>
   <!--查询列表-->
   <select id="selectList" resultMap="BaseResultMap" >
-    select id, rcdate, pnumber, color, type, rccount, costprice, costcount, bz, sshg,gys,pname,qcs
+    select id, rcdate, pnumber, color, type, rccount, costprice, costcount, bz, sshg,gys,pname,qcs,dbfs,rcfs
     from rctable
   </select>
   <!--入仓查询 是否存在该商品-->

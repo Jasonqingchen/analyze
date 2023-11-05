@@ -18,7 +18,7 @@ public interface JxcMapper extends BaseMapper<Jxctable> {
     Jxctable selectByPnamber(String Pnumber);
     List<Jxctable> selectAll();
 
-    List<Jxctable> selectKuserBysameting(@Param("pnumber") String pnumber, @Param("customerphone") String sshg, @Param("start") String start, @Param("end") String end);
+    List<Jxctable> selectKuserBysameting(@Param("pnumber") String pnumber, @Param("start") String start, @Param("end") String end);
 
 
 }

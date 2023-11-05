@@ -16,10 +16,11 @@
     <result column="pnumber" property="pnumber" jdbcType="VARCHAR" />
     <result column="customeradddress" property="customeradddress" jdbcType="VARCHAR" />
     <result column="orderid" property="orderid" jdbcType="VARCHAR" />
+    <result column="ccfs" property="ccfs" jdbcType="VARCHAR" />
   </resultMap>
   <select id="selectList" resultMap="BaseResultMap" >
     select id, type, customername, customerphone, color, ccdate, cccount, ccprice, ccsumprice, 
-    bz, pname, pnumber, customeradddress, orderid
+    bz, pname, pnumber, customeradddress, orderid,ccfs
     from cctable
   </select>
 

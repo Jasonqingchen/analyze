@@ -30,6 +30,7 @@ public class Cctable implements Serializable {
     private String customeradddress;
 
     private String orderid;
+    private String ccfs;
 
     private static final long serialVersionUID = 1L;
 
@@ -143,5 +144,14 @@ public class Cctable implements Serializable {
 
     public void setOrderid(String orderid) {
         this.orderid = orderid == null ? null : orderid.trim();
+    }
+
+
+    public String getCcfs() {
+        return ccfs;
+    }
+
+    public void setCcfs(String ccfs) {
+        this.ccfs = ccfs;
     }
 }

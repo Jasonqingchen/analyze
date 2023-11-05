@@ -47,7 +47,7 @@ public class JxcController {
                 throw new RuntimeException(e);
             };
         }
-        List<Jxctable> list = jxc.selectKuserBysameting((String) map.get("pnumber"), (String) map.get("customerphone"), start, end);
+        List<Jxctable> list = jxc.selectKuserBysameting((String) map.get("pnumber"), start, end);
         return list;
     }
 
@@ -60,6 +60,26 @@ public class JxcController {
     @ResponseBody
     public List<Jxctable> lists(@RequestParam Map map) {
         return jxc.selectAll();
+    }
+
+    /**
+     * 更新盘点条数与差异条数
+     */
+    @RequestMapping("/updatepds")
+    @ResponseBody
+    public String upd(Jxctable jxctable) {
+      int sss =  Integer.valueOf(jxctable.getPdcount()) - Integer.valueOf(jxctable.getJccount());
+        if (sss==0) {
+            jxctable.setPdstatus("正常");
+        } else if (sss<0) {
+            jxctable.setPdstatus("盘亏");
+        } else{
+            jxctable.setPdstatus("盘盈");
+
+        }
+            jxctable.setCycount(String.valueOf(sss));
+             String.valueOf(jxc.updateById(jxctable));
+        return "1";
     }
 
 

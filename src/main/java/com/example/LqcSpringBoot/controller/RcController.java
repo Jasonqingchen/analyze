@@ -97,12 +97,15 @@ public class RcController {
             rcs.setRcdate(y+"-"+m+"-"+d);
             Rctable rctable = (Rctable) rc.selectBYPnumber(rcs.getPnumber());
             if(rctable!=null){
+                //使用全平均
                 rcs.setId(rctable.getId());
-                int i = Integer.parseInt(rctable.getRccount()) + Integer.parseInt(rcs.getRccount());
+               int newcostcount = Integer.parseInt(rctable.getCostcount()) + Integer.parseInt(rcs.getCostcount());//成本总价旧的
+               int newcount = Integer.parseInt(rctable.getRccount()) + Integer.parseInt(rcs.getRccount());
+               int newcpostprice = newcostcount / newcount;
+               int i = Integer.parseInt(rctable.getRccount()) + Integer.parseInt(rcs.getRccount());
                 rcs.setRccount(String.valueOf(i));
-
-                int k = i * Integer.parseInt(rcs.getCostprice());
-                rcs.setCostcount(String.valueOf(k));
+                rcs.setCostprice(String.valueOf(newcpostprice));
+                rcs.setCostcount(String.valueOf(newcostcount));
                 //修改 加库存 和 加总价
                 rc.updateById(rcs);
             } else {

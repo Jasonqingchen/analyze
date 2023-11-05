@@ -26,6 +26,7 @@ public class Jxctable implements Serializable {
     private String cycount;
 
     private String bz;
+    private String pdstatus;
 
     private static final long serialVersionUID = 1L;
 
@@ -123,5 +124,13 @@ public class Jxctable implements Serializable {
 
     public void setBz(String bz) {
         this.bz = bz == null ? null : bz.trim();
+    }
+
+    public String getPdstatus() {
+        return pdstatus;
+    }
+
+    public void setPdstatus(String pdstatus) {
+        this.pdstatus = pdstatus;
     }
 }

@@ -25,6 +25,8 @@ public class Rctable implements Serializable {
     private String gys;
     private String pname;
     private String qcs;
+    private String dbfs;
+    private String rcfs;
 
     private static final long serialVersionUID = 1L;
 
@@ -130,5 +132,21 @@ public class Rctable implements Serializable {
 
     public void setQcs(String qcs) {
         this.qcs = qcs;
+    }
+
+    public String getDbfs() {
+        return dbfs;
+    }
+
+    public void setDbfs(String dbfs) {
+        this.dbfs = dbfs;
+    }
+
+    public String getRcfs() {
+        return rcfs;
+    }
+
+    public void setRcfs(String rcfs) {
+        this.rcfs = rcfs;
     }
 }

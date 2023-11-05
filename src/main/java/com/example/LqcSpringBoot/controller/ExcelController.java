@@ -1,10 +1,13 @@
 package com.example.LqcSpringBoot.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.LqcSpringBoot.mapper.CcMapper;
 import com.example.LqcSpringBoot.mapper.ContainerMapper;
+import com.example.LqcSpringBoot.mapper.JxcMapper;
 import com.example.LqcSpringBoot.mapper.RcMapper;
 import com.example.LqcSpringBoot.model.Cctable;
+import com.example.LqcSpringBoot.model.Jxctable;
 import com.example.LqcSpringBoot.model.Rctable;
 import com.example.LqcSpringBoot.ut.ExportExcel;
 import com.example.LqcSpringBoot.ut.MainPartimportBean;
@@ -23,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +51,9 @@ public class ExcelController {
     @Autowired
     public CcMapper cc;
 
+    @Autowired
+    public JxcMapper jxc;
+
     /**
      * 导入
      * @return
@@ -64,10 +72,21 @@ public class ExcelController {
      * 出仓列表导出功能
      */
     @RequestMapping(value = "/ccdc", method = RequestMethod.POST)
-    public void ccdc (HttpServletResponse response, Cctable cctable, Map map) throws Exception{
-        String[] rowsName = new String[] { "出库时间", "订单编号","商品编码", "商品名称", "颜色", "规格", "出库数量" , "单价" , "总价" , "客户姓名" , "客户电话", "客户地址", "备注"};
+    public void ccdc (HttpServletResponse response, Cctable cctable,@RequestParam  Map map) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String start = null;
+        String end = null;
+        if(map.get("start").toString().length()>0 && map.get("end").toString().length()>0) {
+            try {
+                start = sdf.format(sdf.parse(map.get("start").toString()));
+                end = sdf.format(sdf.parse(map.get("end").toString()));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            };
+        }
+        String[] rowsName = new String[] { "出库时间", "订单编号","商品编码", "商品名称", "颜色", "规格", "出库数量" , "单价" , "总价" , "客户姓名" , "客户电话", "客户地址", "出库方式","备注"};
         // 进行查新（导出所有）
-        List<Cctable> c = cc.selectKuserBysameting(cctable.getOrderid(),cctable.getCustomerphone(),"","");
+        List<Cctable> c = cc.selectKuserBysameting(cctable.getOrderid(),cctable.getCustomerphone(),start,end);
         List<Object[]> dataList = new ArrayList<Object[]>();
         Object[] objs = null;
         for (int i = 0; i < c.size(); i++) {
@@ -84,7 +103,8 @@ public class ExcelController {
             objs[8] =  man.getCustomername();
             objs[9] =  man.getCustomerphone();
             objs[10] =  man.getCustomeradddress();
-            objs[11] =  man.getBz();
+            objs[11] =  man.getCcfs();
+            objs[12] =  man.getBz();
             dataList.add(objs);
         }
         ExportExcel ex = new ExportExcel("出库信息列表", rowsName, dataList);
@@ -98,10 +118,21 @@ public class ExcelController {
      * 入仓列表导出功能
      */
     @RequestMapping(value = "/rcdc", method = RequestMethod.POST)
-    public void rcdc (HttpServletResponse response, Rctable rctable, Map map) throws Exception{
-        String[] rowsName = new String[] { "入库时间", "商品编码", "商品名称", "颜色", "规格", "库存" , "成本价格" , "成本总价" , "所属货柜" , "备注"};
+    public void rcdc (HttpServletResponse response, Rctable rctable, @RequestParam Map map) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String start = null;
+        String end = null;
+        if(map.get("start").toString().length()>0 && map.get("end").toString().length()>0) {
+            try {
+                start = sdf.format(sdf.parse(map.get("start").toString()));
+                end = sdf.format(sdf.parse(map.get("end").toString()));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            };
+        }
+        String[] rowsName = new String[] { "入库时间", "商品编码", "商品名称", "颜色", "规格", "库存" , "成本价格" , "成本总价" , "所属货柜" , "打包方式","入库方式","备注"};
         // 进行查新（导出所有）
-        List<Rctable> c = rc.selectKuserBysameting(rctable.getPnumber(),rctable.getSshg(),"","");
+        List<Rctable> c = rc.selectKuserBysameting(rctable.getPnumber(),rctable.getSshg(),start,end);
         List<Object[]> dataList = new ArrayList<Object[]>();
         Object[] objs = null;
         for (int i = 0; i < c.size(); i++) {
@@ -116,7 +147,9 @@ public class ExcelController {
             objs[6] =  man.getCostprice();
             objs[7] =  man.getCostcount();
             objs[8] =  man.getSshg();
-            objs[9] =  man.getBz();
+            objs[9] =  man.getDbfs();
+            objs[10] =  man.getRcfs();
+            objs[11] =  man.getBz();
             dataList.add(objs);
         }
         ExportExcel ex = new ExportExcel("入库信息列表", rowsName, dataList);
@@ -131,7 +164,7 @@ public class ExcelController {
      */
     @RequestMapping(value = "/dc", method = RequestMethod.POST)
     public void aochuExcel(HttpServletResponse response,Container container) throws Exception {
-    String[] rowsName = new String[] { "柜号", "打包方式", "运输方式", "联系方式", "付款银行", "银行账号" , "柜子尺寸" , "出港时间" , "到港时间" , "状态" , " 代理费是否支付" , "类别" , "数量" , "货值" ,"内容"};
+    String[] rowsName = new String[] { "柜号", "运输方式", "联系方式", "付款银行", "银行账号" , "柜子尺寸" , "出港时间" , "到港时间" , "状态" , " 代理费是否支付" , "类别" , "数量" , "货值" ,"内容"};
                 // 进行查新（导出所有）
         List<Container> c = cm.selectKuserBysameting(container.getGnumber(),container.getBanknumber(),container.getPhone());
             List<Object[]> dataList = new ArrayList<Object[]>();
@@ -140,20 +173,19 @@ public class ExcelController {
                 Container man = c.get(i);
             objs = new Object[rowsName.length];
             objs[0] =  man.getGnumber();
-            objs[1] =  man.getGdbfs();
-            objs[2] =  man.getGysfs();
-            objs[3] =  man.getPhone();
-            objs[4] =  man.getBankname();
-            objs[5] =  man.getBanknumber();
-            objs[6] =  man.getGsize();
-            objs[7] =  man.getCgdate();
-            objs[8] =  man.getDgdate();
-            objs[9] =  man.getStatus();
-            objs[10] =  man.getDls();
-            objs[11] =  man.getType();
-            objs[12] =  man.getCount();
-            objs[13] =  man.getPrice();
-            objs[14] =  man.getContent();
+            objs[1] =  man.getGysfs();
+            objs[2] =  man.getPhone();
+            objs[3] =  man.getBankname();
+            objs[4] =  man.getBanknumber();
+            objs[5] =  man.getGsize();
+            objs[6] =  man.getCgdate();
+            objs[7] =  man.getDgdate();
+            objs[8] =  man.getStatus();
+            objs[9] =  man.getDls();
+            objs[10] =  man.getType();
+            objs[11] =  man.getCount();
+            objs[12] =  man.getPrice();
+            objs[13] =  man.getContent();
             dataList.add(objs);
             }
             ExportExcel ex = new ExportExcel("货柜信息列表", rowsName, dataList);
@@ -161,7 +193,48 @@ public class ExcelController {
             ex.export();
 
 }
+    /**
+     * 进销存导出
+     */
+    @RequestMapping(value = "/jxcdc", method = RequestMethod.POST)
+    public void jxcdc (HttpServletResponse response, Jxctable jxctable,@RequestParam  Map map) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String start = null;
+        String end = null;
+        if(map.get("start").toString().length()>0 && map.get("end").toString().length()>0) {
+            try {
+                start = sdf.format(sdf.parse(map.get("start").toString()));
+                end = sdf.format(sdf.parse(map.get("end").toString()));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            };
+        }
+        String[] rowsName = new String[] {"商品编码", "商品名称", "规格", "颜色" , "期初数" , "入仓数量" , "出仓数量" , "结存条数","盘点条数","差异条数","盘点状态"};
+        // 进行查新（导出所有）
+        List<Jxctable> c = jxc.selectKuserBysameting(jxctable.getPnumber(),start,end);
+        List<Object[]> dataList = new ArrayList<Object[]>();
+        Object[] objs = null;
+        for (int i = 0; i < c.size(); i++) {
+            Jxctable man = c.get(i);
+            objs = new Object[rowsName.length];
+            objs[0] =  man.getPnumber();
+            objs[1] =  man.getPname();
+            objs[2] =  man.getType();
+            objs[3] =  man.getColor();
+            objs[4] =  man.getQcs();
+            objs[5] =  man.getRccount();
+            objs[6] =  man.getCccount();
+            objs[7] =  man.getJccount();
+            objs[8] =  man.getPdcount();
+            objs[9] =  man.getCycount();
+            objs[10] =  man.getPdstatus();
+            dataList.add(objs);
+        }
+        ExportExcel ex = new ExportExcel("盘点信息列表", rowsName, dataList);
+        ex.setResponse(response);
+        ex.export();
 
+    }
 
 
 

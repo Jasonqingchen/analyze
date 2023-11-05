@@ -5,7 +5,6 @@
     <result column="id" property="id" jdbcType="VARCHAR" />
     <result column="gysfs" property="gysfs" jdbcType="VARCHAR" />
     <result column="gnumber" property="gnumber" jdbcType="VARCHAR" />
-    <result column="gdbfs" property="gdbfs" jdbcType="VARCHAR" />
     <result column="gsize" property="gsize" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
     <result column="bankname" property="bankname" jdbcType="VARCHAR" />

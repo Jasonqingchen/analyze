@@ -17,7 +17,8 @@ new Vue({
                     gys: '',
                     sshg: '',
                     qcs: '0',
-                    rcdate: ''
+                    rcdate: '',
+                    rcfs:''
                 }]
             },//入仓动态
             ccdynamicValidateForm: {
@@ -37,6 +38,7 @@ new Vue({
                     bz: '',
                     gys: '',
                     sshg: '',
+                    ccfs:''
                 }]
             },//出仓动态
             examinedlog:false,
@@ -85,7 +87,6 @@ new Vue({
             jxcform:{
                 rcval1:'',
                 rcval2:'',
-                customerphone:'',
                 pnumber:''
             },
             rcd: false,
@@ -96,7 +97,6 @@ new Vue({
                 gysfs:'',
                 id:'',
                 gnumber:'',
-                gdbfs:'',
                 phone:'',
                 gsize:'',
                 bankname:'',
@@ -114,7 +114,6 @@ new Vue({
                 gysfs:'',
                 dgdate:'',
                 gnumber:'',
-                gdbfs:'',
                 phone:'',
                 gsize:'',
                 bankname:'',
@@ -159,63 +158,91 @@ new Vue({
         },
         //进销存列表导出
         exportExceljxc() {
-            let _$this = this;
-            var f = _$this.ccform;
+
+            var jxcform = this.jxcform;
             // 创建一个 form
             var form1 = document.createElement("form");
-            form1.orderid = f.orderid;
-            form1.customerphone = f.customerphone;
-            form1.rcval1 = f.rcval1;
-            form1.rcval2 = f.rcval2;
+            var _$this = this;
+            var dd1="";
+            var dd2="";
+            if (jxcform.rcval1==null || jxcform.rcval1=="") {
+
+                dd1="";
+                // return;
+            }else {
+
+                dd1 = _$this.formatDates(jxcform.rcval1);
+            }
+            if (jxcform.rcval2==null || jxcform.rcval2=="") {
+                dd2="";
+            }else{
+                //return;
+                dd2 = _$this.formatDates(jxcform.rcval2)
+            }
+            form1.orderid = jxcform.pnumber;
+            form1.rcval1 = dd1;
+            form1.rcval2 = dd2;
 
             document.body.appendChild(form1);
             // 创建一个输入
             var input = document.createElement("input");
             // 设置相应参数
             input.type = "text";
-            input.name = "orderid";
-            input.value = f.orderid;
-            var input1 = document.createElement("input");
-            // 设置相应参数
-            input1.type = "text";
-            input1.name = "customerphone";
-            input1.value = f.customerphone;
+            input.name = "pnumber";
+            input.value = jxcform.pnumber;
             // 创建一个输入
             var input2 = document.createElement("input");
             // 设置相应参数
             input2.type = "text";
             input2.name = "start";
-            input2.value = f.rcval1;
+            input2.value = dd1;
             var input3 = document.createElement("input");
             // 设置相应参数
             input3.type = "text";
             input3.name = "end";
-            input3.value = f.rcval2;
+            input3.value = dd2;
             // 将该输入框插入到 form 中
             form1.appendChild(input);
-            form1.appendChild(input1);
             form1.appendChild(input2);
             form1.appendChild(input3);
             // form 的提交方式
             form1.method = "POST";
             // form 提交路径
-            form1.action = "/excel/ccdc";
+            form1.action = "/excel/jxcdc";
             // 对该 form 执行提交
-            //暂时注释掉 避免测试导出 form1.submit();
+            form1.submit();
             // 删除该 form
             document.body.removeChild(form1);
 
         },
-        //库存列表导出
+        //出仓列表导出
         exportExcelcc() {
-            let _$this = this;
-            var f = _$this.ccform;
+
+            var ccform = this.ccform;
             // 创建一个 form
             var form1 = document.createElement("form");
-            form1.orderid = f.orderid;
-            form1.customerphone = f.customerphone;
-            form1.rcval1 = f.rcval1;
-            form1.rcval2 = f.rcval2;
+            var _$this = this;
+            var dd1="";
+            var dd2="";
+            if (ccform.rcval1==null || ccform.rcval1=="") {
+
+                dd1="";
+                // return;
+            }else {
+
+                dd1 = _$this.formatDates(ccform.rcval1);
+            }
+            if (ccform.rcval2==null || ccform.rcval2=="") {
+                dd2="";
+            }else{
+                //return;
+                dd2 = _$this.formatDates(ccform.rcval2)
+            }
+
+            form1.orderid = ccform.orderid;
+            form1.customerphone = ccform.customerphone;
+            form1.rcval1 = dd1;
+            form1.rcval2 = dd2;
 
             document.body.appendChild(form1);
             // 创建一个输入
@@ -223,23 +250,23 @@ new Vue({
             // 设置相应参数
             input.type = "text";
             input.name = "orderid";
-            input.value = f.orderid;
+            input.value = ccform.orderid;
             var input1 = document.createElement("input");
             // 设置相应参数
             input1.type = "text";
             input1.name = "customerphone";
-            input1.value = f.customerphone;
+            input1.value = ccform.customerphone;
             // 创建一个输入
             var input2 = document.createElement("input");
             // 设置相应参数
             input2.type = "text";
             input2.name = "start";
-            input2.value = f.rcval1;
+            input2.value = dd1;
             var input3 = document.createElement("input");
             // 设置相应参数
             input3.type = "text";
             input3.name = "end";
-            input3.value = f.rcval2;
+            input3.value = dd2;
             // 将该输入框插入到 form 中
             form1.appendChild(input);
             form1.appendChild(input1);
@@ -255,39 +282,56 @@ new Vue({
             document.body.removeChild(form1);
 
         },
-        //库存列表导出
+        //入仓列表导出
         exportExcelrc() {
-            let _$this = this;
-            var f = _$this.rcform;
+            var rcform = this.rcform;
+            var _$this = this;
+            var dd1="";
+            var dd2="";
+            if (rcform.rcval1==null || rcform.rcval1=="") {
+
+                dd1="";
+                // return;
+            }else {
+
+                dd1 = _$this.formatDates(rcform.rcval1);
+            }
+            if (rcform.rcval2==null || rcform.rcval2=="") {
+                dd2="";
+            }else{
+                //return;
+                dd2 = _$this.formatDates(rcform.rcval2)
+            }
+
             // 创建一个 form
             var form1 = document.createElement("form");
-            form1.pnumber = f.pnumber;
-            form1.sshg = f.sshg;
-            form1.rcval1 = f.rcval1;
-            form1.rcval2 = f.rcval2;
+            form1.pnumber = rcform.pnumber;
+            form1.sshg = rcform.sshg;
+            form1.rcval1 = dd1;
+            form1.rcval2 = dd2;
             document.body.appendChild(form1);
             // 创建一个输入
             var input = document.createElement("input");
             // 设置相应参数
             input.type = "text";
             input.name = "pnumber";
-            input.value = f.pnumber;
+            input.value = rcform.pnumber;
             var input2 = document.createElement("input");
             // 设置相应参数
             input2.type = "text";
             input2.name = "sshg";
-            input2.value = f.sshg;
+            input2.value = rcform.sshg;
             // 创建一个输入
             var input3 = document.createElement("input");
             // 设置相应参数
             input3.type = "text";
             input3.name = "start";
-            input3.value = f.rcval1;
+            input3.value = dd1;
             var input4 = document.createElement("input");
             // 设置相应参数
             input4.type = "text";
             input4.name = "end";
-            input4.value = f.rcval2;
+            input4.value = dd2;
             // 将该输入框插入到 form 中
             form1.appendChild(input);
             form1.appendChild(input2);
@@ -422,10 +466,6 @@ new Vue({
                 newthis.$message.error('货柜号不能为空');
                 return;
             }
-            if (editForm.gdbfs=="" || editForm.gdbfs==null) {
-                newthis.$message.error('打包方式不能为空');
-                return;
-            }
             if (editForm.bankname=="" || editForm.bankname==null) {
                 newthis.$message.error('所属银行不能为空');
                 return;
@@ -461,7 +501,6 @@ new Vue({
                 'phone': editForm.phone,
                 'gysfs': editForm.gysfs,
                 'gnumber': editForm.gnumber,
-                'gdbfs': editForm.gdbfs,
                 'gsize': editForm.gsize,
                 'bankname': editForm.bankname,
                 'cgdate': cgdate,
@@ -514,10 +553,6 @@ new Vue({
                 newthis.$message.error('货柜号不能为空');
                 return;
             }
-            if (addForm.gdbfs=="" || addForm.gdbfs==null) {
-                newthis.$message.error('打包方式不能为空');
-                return;
-            }
             if (addForm.bankname=="" || addForm.bankname==null) {
                 newthis.$message.error('所属银行不能为空');
                 return;
@@ -550,7 +585,6 @@ new Vue({
                 'phone': addForm.phone,
                 'gysfs': addForm.gysfs,
                 'gnumber': addForm.gnumber,
-                'gdbfs': addForm.gdbfs,
                 'gsize': addForm.gsize,
                 'bankname': addForm.bankname,
                 'cgdate': addForm.cgdate,
@@ -626,7 +660,6 @@ new Vue({
 
             var d = {
                 'pnumber': jxcform.pnumber,
-                'customerphone': jxcform.customerphone,
                 'rcval1': dd1,
                 'rcval2': dd2
             };
@@ -1325,8 +1358,16 @@ new Vue({
                 if (from.rcdetil[h].qcs=="" || from.rcdetil[h].qcs==null){
                     from.rcdetil[h].qcs ="0";
                 }
+                if (from.rcdetil[h].dbfs=="" || from.rcdetil[h].dbfs==null){
+                    newthis.$message.error('商品'+(h+1)+'打包方式为空');
+                    return;
+                }
                 if (from.rcdetil[h].pnumber=="" || from.rcdetil[h].pnumber==null){
                     newthis.$message.error('商品'+(h+1)+'编码为空');
+                    return;
+                }
+                if (from.rcdetil[h].rcfs=="" || from.rcdetil[h].rcfs==null){
+                    newthis.$message.error('商品'+(h+1)+'入仓方式为空');
                     return;
                 }
                 if (from.rcdetil[h].pname=="" || from.rcdetil[h].pname==null){
@@ -1495,6 +1536,10 @@ new Vue({
                     sums[index] = ' ';
                     return;
                 }
+                if (index === 13) {
+                    sums[index] = ' ';
+                    return;
+                }
 
 
                 const values = data.map(item => Number(item[column.property]));
@@ -1552,6 +1597,10 @@ new Vue({
                     return;
                 }
                 if (index === 11) {
+                    sums[index] = ' ';
+                    return;
+                }
+                if (index === 12) {
                     sums[index] = ' ';
                     return;
                 }
@@ -1643,6 +1692,10 @@ new Vue({
                     sums[index] = ' ';
                     return;
                 }
+                if (index === 15) {
+                    sums[index] = ' ';
+                    return;
+                }
                 const values = data.map(item => Number(item[column.property]));
                 if (!values.every(value => isNaN(value))) {
                     sums[index] = values.reduce((prev, curr) => {
@@ -1691,6 +1744,41 @@ new Vue({
                 }
             });
 
-        }
+        },
+        //表格编辑事件
+        //input框失去焦点事件
+        handleInputBlur(event){   //当 input 失去焦点 时,input 切换为 span，并且让下方 表格消失（注意，与点击表格事件的执行顺序）
+            var d = {
+                'id': event.id,
+                'pnumber': event.pnumber,
+                'pnumber': event.pnumber,
+                'type': event.type,
+                'color': event.color,
+                'qcs': event.qcs,
+                'rccount': event.rccount,
+                'cccount': event.cccount,
+                'jccount': event.jccount,
+                'pdcount': event.pdcount,
+                'cycount': event.cycount,
+                'bz': event.bz
+            };
+            var newthis = this;
+            //请求后台
+            var url = '/jxc/updatepds';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: d,
+                dataType: 'json',
+                success: function (result) {
+                    newthis.jxclist();
+                },
+                error: function () {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+
+        },
     }
 })
