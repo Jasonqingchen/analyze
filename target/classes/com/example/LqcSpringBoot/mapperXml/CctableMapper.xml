@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.LqcSpringBoot.mapper.CcMapper" >
+  <resultMap id="BaseResultMap" type="com.example.LqcSpringBoot.model.Cctable" >
+    <result column="id" property="id" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="customername" property="customername" jdbcType="VARCHAR" />
+    <result column="customerphone" property="customerphone" jdbcType="VARCHAR" />
+    <result column="color" property="color" jdbcType="VARCHAR" />
+    <result column="ccdate" property="ccdate" jdbcType="VARCHAR" />
+    <result column="cccount" property="cccount" jdbcType="VARCHAR" />
+    <result column="ccprice" property="ccprice" jdbcType="VARCHAR" />
+    <result column="ccsumprice" property="ccsumprice" jdbcType="VARCHAR" />
+    <result column="bz" property="bz" jdbcType="VARCHAR" />
+    <result column="pname" property="pname" jdbcType="VARCHAR" />
+    <result column="pnumber" property="pnumber" jdbcType="VARCHAR" />
+    <result column="customeradddress" property="customeradddress" jdbcType="VARCHAR" />
+    <result column="orderid" property="orderid" jdbcType="VARCHAR" />
+    <result column="ccfs" property="ccfs" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="selectList" resultMap="BaseResultMap" >
+    select id, type, customername, customerphone, color, ccdate, cccount, ccprice, ccsumprice, 
+    bz, pname, pnumber, customeradddress, orderid,ccfs
+    from cctable
+  </select>
+
+  <!--条件查询-->
+  <select id="selectKuserBysameting" resultMap="BaseResultMap">
+    select * from cctable  where 1=1
+    <if test="orderid != null and orderid != ''">
+      AND orderid = #{orderid}
+    </if>
+    <if test="customerphone != null and customerphone != ''">
+      AND customerphone = #{customerphone}
+    </if>
+    <if test="start != null and start!=''">
+      AND ccdate &gt;= #{start}
+    </if>
+    <if test="end !=null and end!=''">
+      AND ccdate &lt;= #{end}
+    </if>
+
+  </select>
+
+  <!--删除-->
+  <delete id="deleteKuserById">
+    delete from cctable where id = #{id};
+  </delete>
+</mapper>
