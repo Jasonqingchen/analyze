@@ -129,9 +129,7 @@
                                     <el-form-item label="运输方式">
                                         <span> <el-link  disabled>{{ props.row.gysfs }}</el-link></span>
                                     </el-form-item>
-                                    <el-form-item label="打包方式">
-                                        <span> <el-link  disabled>{{ props.row.gdbfs }}</el-link></span>
-                                    </el-form-item>
+
                                     <el-form-item label="货柜尺寸">
                                         <span> <el-link  disabled>{{ props.row.gsize }}</el-link></span>
                                     </el-form-item>
@@ -183,11 +181,6 @@
                                 label="柜号"
                                 prop="gnumber"
                                 width="150">
-                        </el-table-column>
-                        <el-table-column
-                                label="打包方式"
-                                prop="gdbfs"
-                                width="50">
                         </el-table-column>
                         <el-table-column
                                 label="运输方式"
@@ -501,6 +494,16 @@
                                 width="180">
                         </el-table-column>
                         <el-table-column
+                                label="打包方式"
+                                prop="dbfs"
+                                width="200">
+                        </el-table-column>
+                        <el-table-column
+                                label="入库方式"
+                                prop="rcfs"
+                                width="200">
+                        </el-table-column>
+                        <el-table-column
                                 label="备注"
                                 prop="bz"
                                 width="180">
@@ -658,6 +661,11 @@
                                 width="180">
                         </el-table-column>
                         <el-table-column
+                                label="出库方式"
+                                prop="ccfs"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
                                 label="备注"
                                 prop="bz"
                                 width="180">
@@ -707,9 +715,6 @@
                                     <el-form-item label="商品编号">
                                         <el-input v-model="jxcform.pnumber" style="width: 200px;" class="input-with-select" clearable></el-input>
                                     </el-form-item>
-                                    <el-form-item label="客户电话" style="text-align: left">
-                                        <el-input v-model="jxcform.customerphone" style="width: 200px;border: #FFFFFF;" class="input-with-select" clearable></el-input>
-                                    </el-form-item><br>
                                     <el-form-item label="日期" style="text-align: left">
                                         <div class="block">
                                             <el-date-picker
@@ -795,11 +800,20 @@
                         <el-table-column
                                 label="盘点条数"
                                 prop="pdcount"
-                                width="80">
+                                width="250">
+                            <template slot-scope="scope">
+                                <!--<el-input v-model="scope.row.pdcount" @blur="handleInputBlur" placeholder="请输入内容" Style="width: 150px;"></el-input>-->
+                                <el-input-number size="medium" @change="handleInputBlur(scope.row)" v-model="scope.row.pdcount"></el-input-number>
+                            </template>
                         </el-table-column>
                         <el-table-column
                                 label="差异条数"
                                 prop="cycount"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                label="盘点状态"
+                                prop="pdstatus"
                                 width="180">
                         </el-table-column>
 
@@ -854,10 +868,6 @@
             </el-form-item>
             <el-form-item label="运输方式：" prop="gysfs">
                 <el-input v-model="addForm.gysfs" id="gysfs" placeholder="请输入运输方式"
-                          style="width: 100%;"></el-input>
-            </el-form-item>
-            <el-form-item label="打包方式：" prop="gdbfs">
-                <el-input v-model="addForm.gdbfs" id="gdbfs" placeholder="打包方式"
                           style="width: 100%;"></el-input>
             </el-form-item>
             <el-form-item label="尺寸：" prop="gsize">
@@ -935,10 +945,6 @@
             </el-form-item>
             <el-form-item label="运输方式：" prop="gysfs">
                 <el-input v-model="editForm.gysfs" id="gysfs" placeholder="请输入运输方式"
-                          style="width: 100%;"></el-input>
-            </el-form-item>
-            <el-form-item label="打包方式：" prop="gdbfs">
-                <el-input v-model="editForm.gdbfs" id="gdbfs" placeholder="打包方式"
                           style="width: 100%;"></el-input>
             </el-form-item>
             <el-form-item label="尺寸：" prop="gsize">
@@ -1057,6 +1063,20 @@
                             v-model="every.color">
                     </el-input>
                 </el-descriptions-item>
+                <el-descriptions-item label="入库方式">
+                    <el-input
+                            placeholder=""
+                            prefix-icon="el-icon-edit"
+                            v-model="every.rcfs">
+                    </el-input>
+                </el-descriptions-item>
+                <el-descriptions-item label="打包方式">
+                    <el-input
+                            placeholder=""
+                            prefix-icon="el-icon-edit"
+                            v-model="every.dbfs">
+                    </el-input>
+                </el-descriptions-item>
                 <el-descriptions-item label="供应商" :contentStyle="{'text-align': 'right'}">
                     <el-input
                             placeholder=""
@@ -1168,7 +1188,7 @@
 
             <br><br><br>
             <div v-for="(every, index) in ccdynamicValidateForm.rcdetil" :key="index">
-                <el-descriptions title="" :column="3" border>
+                <el-descriptions title="" :column="4" border>
                     <el-descriptions-item label="商品编码" label-class-name="my-label" content-class-name="my-content">
                         <el-input
                                 placeholder=""
@@ -1203,6 +1223,13 @@
                                 placeholder=""
                                 prefix-icon="el-icon-edit"
                                 v-model="every.type">
+                        </el-input>
+                    </el-descriptions-item>
+                    <el-descriptions-item label="出库方式" >
+                        <el-input
+                                placeholder=""
+                                prefix-icon="el-icon-edit"
+                                v-model="every.ccfs">
                         </el-input>
                     </el-descriptions-item>
                     <el-descriptions-item label="单价">
