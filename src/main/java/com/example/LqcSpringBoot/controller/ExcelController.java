@@ -100,7 +100,7 @@ public class ExcelController {
             objs[7] =  man.getCcsumprice();
             objs[8] =  man.getCustomername();
             objs[9] =  man.getCustomerphone();
-            objs[10] =  man.getCustomeradddress();
+            objs[10] =  man.getCustomeraddress();
             objs[11] =  man.getCcfs();
             objs[12] =  man.getBz();
             dataList.add(objs);

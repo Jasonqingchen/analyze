@@ -15,7 +15,7 @@
     <result column="gys" property="gys" jdbcType="VARCHAR" />
     <result column="pname" property="pname" jdbcType="VARCHAR" />
     <result column="qcs" property="qcs" jdbcType="VARCHAR" />
-    <result column="dbfs" property="qcs" jdbcType="VARCHAR" />
+    <result column="dbfs" property="dbfs" jdbcType="VARCHAR" />
     <result column="rcfs" property="rcfs" jdbcType="VARCHAR" />
   </resultMap>
   <!--查询列表-->

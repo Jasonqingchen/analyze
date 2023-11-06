@@ -189,7 +189,7 @@ public class RcController {
         }
         String cpunt = rctable.getRccount();
 
-               int ints = Integer.parseInt(cpunt) - Integer.parseInt((String)map.get("cccount"));
+               Integer ints = Integer.parseInt(cpunt) - Integer.parseInt(map.get("cccount").toString().replace(" ", ""));
                if (ints>=0){
                    return 2;
                } else {

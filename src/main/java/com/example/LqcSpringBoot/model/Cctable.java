@@ -27,7 +27,7 @@ public class Cctable implements Serializable {
 
     private String pnumber;
 
-    private String customeradddress;
+    private String customeraddress;
 
     private String orderid;
     private String ccfs;
@@ -130,12 +130,12 @@ public class Cctable implements Serializable {
         this.pnumber = pnumber == null ? null : pnumber.trim();
     }
 
-    public String getCustomeradddress() {
-        return customeradddress;
+    public String getCustomeraddress() {
+        return customeraddress;
     }
 
-    public void setCustomeradddress(String customeradddress) {
-        this.customeradddress = customeradddress == null ? null : customeradddress.trim();
+    public void setCustomeraddress(String customeraddress) {
+        this.customeraddress = customeraddress == null ? null : customeraddress.trim();
     }
 
     public String getOrderid() {

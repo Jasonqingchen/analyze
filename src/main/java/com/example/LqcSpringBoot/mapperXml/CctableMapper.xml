@@ -14,13 +14,13 @@
     <result column="bz" property="bz" jdbcType="VARCHAR" />
     <result column="pname" property="pname" jdbcType="VARCHAR" />
     <result column="pnumber" property="pnumber" jdbcType="VARCHAR" />
-    <result column="customeradddress" property="customeradddress" jdbcType="VARCHAR" />
+    <result column="customeraddress" property="customeraddress" jdbcType="VARCHAR" />
     <result column="orderid" property="orderid" jdbcType="VARCHAR" />
     <result column="ccfs" property="ccfs" jdbcType="VARCHAR" />
   </resultMap>
   <select id="selectList" resultMap="BaseResultMap" >
     select id, type, customername, customerphone, color, ccdate, cccount, ccprice, ccsumprice, 
-    bz, pname, pnumber, customeradddress, orderid,ccfs
+    bz, pname, pnumber, customeraddress, orderid,ccfs
     from cctable
   </select>
 

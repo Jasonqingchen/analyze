@@ -121,11 +121,11 @@ public class CcController {
                 d="0"+d;
             }
             rcs.setCcdate(y+"-"+m+"-"+d);
-            rcs.setCustomeradddress(map.get("customeraddress").toString());
+            rcs.setCustomeraddress(map.get("customeraddress").toString());
             rcs.setCustomername(map.get("customername").toString());
             rcs.setCustomerphone(map.get("customerphone").toString());
             rcs.setOrderid(map.get("ccorder").toString());
-            rcs.setCcsumprice(String.valueOf(Integer.parseInt(rcs.getCccount()) * Integer.parseInt(rcs.getCcprice())));
+            rcs.setCcsumprice(String.valueOf(Integer.parseInt(rcs.getCccount()) * Integer.parseInt(rcs.getCcprice().replace(" ", ""))));
             //新增
             rcs.setId(cn.hutool.core.lang.UUID.randomUUID().toString().replace("-", ""));
             cct.insert(rcs);
