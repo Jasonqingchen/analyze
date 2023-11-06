@@ -11,7 +11,7 @@
  Target Server Version : 80031 (8.0.31)
  File Encoding         : 65001
 
- Date: 04/11/2023 08:25:06
+ Date: 06/11/2023 16:25:45
 */
 
 SET NAMES utf8mb4;
@@ -35,7 +35,8 @@ CREATE TABLE `cctable` (
   `pname` varchar(255) DEFAULT NULL COMMENT '产品名称',
   `pnumber` varchar(255) DEFAULT NULL COMMENT '产品编码',
   `customeradddress` varchar(255) DEFAULT NULL COMMENT '客户地址',
-  `orderid` varchar(255) DEFAULT NULL COMMENT '订单编号 自动生成'
+  `orderid` varchar(255) DEFAULT NULL COMMENT '订单编号 自动生成',
+  `ccfs` varchar(255) DEFAULT NULL COMMENT '出库方式'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

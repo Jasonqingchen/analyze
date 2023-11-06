@@ -2,19 +2,14 @@ package com.example.LqcSpringBoot.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.LqcSpringBoot.mapper.CcMapper;
-import com.example.LqcSpringBoot.mapper.ContainerMapper;
-import com.example.LqcSpringBoot.mapper.JxcMapper;
-import com.example.LqcSpringBoot.mapper.RcMapper;
-import com.example.LqcSpringBoot.model.Cctable;
-import com.example.LqcSpringBoot.model.Jxctable;
-import com.example.LqcSpringBoot.model.Rctable;
+import com.example.LqcSpringBoot.mapper.*;
+import com.example.LqcSpringBoot.model.*;
+import com.example.LqcSpringBoot.model.Container;
 import com.example.LqcSpringBoot.ut.ExportExcel;
 import com.example.LqcSpringBoot.ut.MainPartimportBean;
 import com.gaoice.easyexcel.spring.boot.autoconfigure.annotation.ResponseExcel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import com.example.LqcSpringBoot.model.Container;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,6 +48,9 @@ public class ExcelController {
 
     @Autowired
     public JxcMapper jxc;
+
+    @Autowired
+    public JxctablebfMapper jbf;
 
     /**
      * 导入
@@ -193,6 +191,52 @@ public class ExcelController {
             ex.export();
 
 }
+
+
+
+    /**
+     * 进销存导出
+     */
+    @RequestMapping(value = "/jxcbfdc", method = RequestMethod.POST)
+    public void jxcbfdc (HttpServletResponse response, Jxctable jxctable,@RequestParam  Map map) throws Exception{
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String start = null;
+        String end = null;
+        if(map.get("start").toString().length()>0 && map.get("end").toString().length()>0) {
+            try {
+                start = sdf.format(sdf.parse(map.get("start").toString()));
+                end = sdf.format(sdf.parse(map.get("end").toString()));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            };
+        }
+        String[] rowsName = new String[] {"商品编码", "商品名称", "规格", "颜色" , "期初数" , "入仓数量" , "出仓数量" , "结存条数","盘点条数","差异条数","盘点状态","时间"};
+        // 进行查新（导出所有）
+        List<Jxctablebf> c = jbf.selectKuserBysameting(start,end);
+        List<Object[]> dataList = new ArrayList<Object[]>();
+        Object[] objs = null;
+        for (int i = 0; i < c.size(); i++) {
+            Jxctablebf man = c.get(i);
+            objs = new Object[rowsName.length];
+            objs[0] =  man.getPnumber();
+            objs[1] =  man.getPname();
+            objs[2] =  man.getType();
+            objs[3] =  man.getColor();
+            objs[4] =  man.getQcs();
+            objs[5] =  man.getRccount();
+            objs[6] =  man.getCccount();
+            objs[7] =  man.getJccount();
+            objs[8] =  man.getPdcount();
+            objs[9] =  man.getCycount();
+            objs[10] =  man.getPdstatus();
+            objs[11] =  man.getDate();
+            dataList.add(objs);
+        }
+        ExportExcel ex = new ExportExcel("盘点信息列表", rowsName, dataList);
+        ex.setResponse(response);
+        ex.export();
+
+    }
     /**
      * 进销存导出
      */

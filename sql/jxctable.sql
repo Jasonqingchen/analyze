@@ -11,7 +11,7 @@
  Target Server Version : 80031 (8.0.31)
  File Encoding         : 65001
 
- Date: 04/11/2023 08:25:36
+ Date: 06/11/2023 16:26:06
 */
 
 SET NAMES utf8mb4;
@@ -33,7 +33,8 @@ CREATE TABLE `jxctable` (
   `jccount` varchar(255) DEFAULT NULL COMMENT '结存数量',
   `pdcount` varchar(255) DEFAULT NULL COMMENT '盘点数量',
   `cycount` varchar(255) DEFAULT NULL COMMENT '差异条数',
-  `bz` varchar(255) DEFAULT NULL COMMENT '备注'
+  `bz` varchar(255) DEFAULT NULL COMMENT '备注',
+  `pdstatus` varchar(255) DEFAULT NULL COMMENT '盘点状态'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

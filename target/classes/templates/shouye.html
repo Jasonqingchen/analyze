@@ -715,7 +715,7 @@
                                     <el-form-item label="商品编号">
                                         <el-input v-model="jxcform.pnumber" style="width: 200px;" class="input-with-select" clearable></el-input>
                                     </el-form-item>
-                                    <el-form-item label="日期" style="text-align: left">
+                                   <!-- <el-form-item label="日期" style="text-align: left">
                                         <div class="block">
                                             <el-date-picker
                                                     v-model="jxcform.rcval1"
@@ -728,7 +728,7 @@
                                                     placeholder="选择结束">
                                             </el-date-picker>
                                         </div>
-                                    </el-form-item>
+                                    </el-form-item>-->
                                     <el-button  @click="seachjxc" icon="el-icon-search">搜索</el-button>
                                 </el-col>
                                 <el-col :span="7" style="text-align: center;">
@@ -743,7 +743,7 @@
                         </el-form>
                     </el-button-group>
                     <el-table
-                            :data="tableData4.slice((currentPagejxc-1)*pagesizejxc,currentPagecc*pagesizejxc).filter(data => !search4 || data.pnumber.toLowerCase().includes(search4.toLowerCase()))"
+                            :data="tableData4.slice((currentPagejxc-1)*pagesizejxc,currentPagejxc*pagesizejxc).filter(data => !search4 || data.pnumber.toLowerCase().includes(search4.toLowerCase()))"
                             ref="multipleTable"
                             show-summary
                             border
@@ -780,7 +780,7 @@
                         <el-table-column
                                 label="期初数"
                                 prop="qcs"
-                                width="60">
+                                width="160">
                         </el-table-column>
                         <el-table-column
                                 label="入库数量"
@@ -824,12 +824,9 @@
                                         size="mini"
                                         placeholder="输入订商品编号"/>
                             </template>
-                            <template slot-scope="scope">
-
-                            </template>
                         </el-table-column>
                     </el-table>
-                    <!--入仓单及列表分页-->
+                    <!--进销存单及列表分页-->
                     <div class="block" style="text-align: center;">
                         <br>
                         <el-pagination
@@ -840,6 +837,142 @@
                                 :page-size="pagesizejxc"
                                 layout="total, sizes, prev, pager, next, jumper"
                                 :total="tableData4.length">
+                        </el-pagination>
+                    </div>
+                    <br><br>
+                    <div style="text-align: center;">
+                        <el-link type="info" style="font-size: 30px;"disabled><Strong>进销存日期查询表</Strong></el-link>
+                    </div>
+                    <br><br>
+                    <el-button-group style="width: 100%;color: #FFFFFF;">
+                        <el-form :model="jxcbfform" ref="jxcbfform":inline="true" class="demo-form-inline" style="color: #FFFFFF;text-align: right" >
+                            <el-row>
+                                <el-col :span="17" style="color: #FFFFFF;text-align: left;">
+                                     <el-form-item label="日期" style="text-align: left">
+                                         <div class="block">
+                                             <el-date-picker
+                                                     v-model="jxcbfform.rcval1"
+                                                     type="date"
+                                                     placeholder="选择开始">
+                                             </el-date-picker>
+                                             <el-date-picker
+                                                     v-model="jxcbfform.rcval2"
+                                                     type="date"
+                                                     placeholder="选择结束">
+                                             </el-date-picker>
+                                         </div>
+                                     </el-form-item>
+                                    <el-button  @click="seachjxcbf" icon="el-icon-search">搜索</el-button>
+                                </el-col>
+                                <el-col :span="7" style="text-align: center;">
+                                    <div class="grid-content bg-purple-light" style="text-align: center;">
+                                        <el-button-group>
+                                            <el-button size="mini" style="text-align: right;" type="primary" @click="exportExceljxcbf"><i
+                                                    class="el-icon-folder-opened"></i>导出到Excel
+                                            </el-button>
+                                        </el-button-group></div><br><br>
+                                </el-col>
+                            </el-row>
+                        </el-form>
+                    </el-button-group><br><br>
+                    <!--进销存日期查询表-->
+                    <el-table
+                            :data="tableData8.slice((currentPagejxcbf-1)*pagesizejxcbf,currentPagejxcbf*pagesizejxcbf).filter(data => !search8 || data.pnumber.toLowerCase().includes(search8.toLowerCase()))"
+                            ref="multipleTable"
+                            border
+                            height="300"
+                            :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+                            @selection-change="handleSelectionChangejxcbf"
+                            style="width: 100%;">
+                        <el-table-column
+                                label="序号"
+                                type="index"
+                                width="55">
+                        </el-table-column>
+                        <el-table-column
+                                label="时间"
+                                width="120"
+                                prop="date">
+                        </el-table-column>
+                        <el-table-column
+                                label="产品编号"
+                                width="150"
+                                prop="pnumber">
+                        </el-table-column>
+                        <el-table-column
+                                label="产品名称"
+                                width="150"
+                                prop="pname">
+                        </el-table-column>
+                        <el-table-column
+                                label="规格"
+                                prop="type"
+                                width="140">
+                        </el-table-column>
+                        <el-table-column
+                                label="颜色"
+                                prop="pname"
+                                width="140">
+                        </el-table-column>
+                        <el-table-column
+                                label="期初数"
+                                prop="qcs"
+                                width="160">
+                        </el-table-column>
+                        <el-table-column
+                                label="入库数量"
+                                prop="rccount"
+                                width="150">
+                        </el-table-column>
+                        <el-table-column
+                                label="出库数量"
+                                prop="cccount"
+                                width="120">
+                        </el-table-column>
+                        <el-table-column
+                                label="结存条数"
+                                prop="jccount"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                label="盘点条数"
+                                prop="pdcount"
+                                width="250">
+                        </el-table-column>
+                        <el-table-column
+                                label="差异条数"
+                                prop="cycount"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                label="盘点状态"
+                                prop="pdstatus"
+                                width="180">
+                        </el-table-column>
+
+                        <el-table-column label="操作" width="250">
+                            <template slot="header" slot-scope="scope">
+                                <el-input
+                                        v-model="search8"
+                                        size="mini"
+                                        placeholder="输入订商品编号"/>
+                            </template>
+                            <template slot-scope="scope">
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <!--进销存及列表分页-->
+                    <div class="block" style="text-align: center;">
+                        <br>
+                        <el-pagination
+                                @size-change="handleSizeChangejxcbf"
+                                @current-change="handleCurrentChangejxcbf"
+                                :current-page="currentPagejxcbf"
+                                :page-sizes="[10,20,50,1000]"
+                                :page-size="pagesizejxcbf"
+                                layout="total, sizes, prev, pager, next, jumper"
+                                :total="tableData8.length">
                         </el-pagination>
                     </div>
                 </el-tab-pane>

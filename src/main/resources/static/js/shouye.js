@@ -50,6 +50,7 @@ new Vue({
             tableData3:[],
             tableData4: [],//进销存列表
             tableData5: [],//货柜关联货物表格
+            tableData8: [],//进销存导出
             currentPage: 1, //初始页
             pagesize: 10,    //    每页的数据
             search: '',
@@ -57,6 +58,7 @@ new Vue({
             search3:'',
             search4:'',
             search5:'',
+            search8:'',
             currentPagerc: 1, //初始页
             pagesizerc: 10,    //    每页的数据
             searchrc: '',
@@ -64,6 +66,8 @@ new Vue({
             pagesizecc: 10,    //    每页的数据
             currentPagejxc: 1, //初始页
             pagesizejxc: 10,    //    每页的数据
+            currentPagejxcbf: 1, //初始页
+            pagesizejxcbf: 10,    //    每页的数据
             currentPagegl: 1, //初始页
             pagesizegl: 10,    //    每页的数据
             searchcc: '',
@@ -83,6 +87,10 @@ new Vue({
                 rcval2:'',
                 customerphone:'',
                 orderid:''
+            },
+            jxcbfform:{
+                rcval1:'',
+                rcval2:''
             },
             jxcform:{
                 rcval1:'',
@@ -155,6 +163,57 @@ new Vue({
                     return false;
                 }
             });
+        },
+        //进销存列表导出
+        exportExceljxcbf() {
+
+            var jxcbfform = this.jxcbfform;
+            // 创建一个 form
+            var form1 = document.createElement("form");
+            var _$this = this;
+            var dd1="";
+            var dd2="";
+            if (jxcbfform.rcval1==null || jxcbfform.rcval1=="") {
+
+                dd1="";
+                // return;
+            }else {
+
+                dd1 = _$this.formatDates(jxcbfform.rcval1);
+            }
+            if (jxcbfform.rcval2==null || jxcbfform.rcval2=="") {
+                dd2="";
+            }else{
+                //return;
+                dd2 = _$this.formatDates(jxcbfform.rcval2)
+            }
+            form1.rcval1 = dd1;
+            form1.rcval2 = dd2;
+
+            document.body.appendChild(form1);
+            // 创建一个输入
+            var input2 = document.createElement("input");
+            // 设置相应参数
+            input2.type = "text";
+            input2.name = "start";
+            input2.value = dd1;
+            var input3 = document.createElement("input");
+            // 设置相应参数
+            input3.type = "text";
+            input3.name = "end";
+            input3.value = dd2;
+            // 将该输入框插入到 form 中
+            form1.appendChild(input2);
+            form1.appendChild(input3);
+            // form 的提交方式
+            form1.method = "POST";
+            // form 提交路径
+            form1.action = "/excel/jxcbfdc";
+            // 对该 form 执行提交
+            form1.submit();
+            // 删除该 form
+            document.body.removeChild(form1);
+
         },
         //进销存列表导出
         exportExceljxc() {
@@ -638,6 +697,51 @@ new Vue({
             self.rcdlog = true;
         },
         //条件搜索
+        seachjxcbf (){
+            var jxcbfform = this.jxcbfform;
+            var _$this = this;
+            var dd1="";
+            var dd2="";
+            if (jxcbfform.rcval1==null || jxcbfform.rcval1=="") {
+
+                dd1="";
+                // return;
+            }else {
+
+                dd1 = _$this.formatDates(jxcbfform.rcval1);
+            }
+            if (jxcbfform.rcval2==null || jxcbfform.rcval2=="") {
+                dd2="";
+            }else{
+                //return;
+                dd2 = _$this.formatDates(jxcbfform.rcval2)
+            }
+
+            var d = {
+                'rcval1': dd1,
+                'rcval2': dd2,
+            };
+            var url = '/jxcbf/seach_ht';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: d,
+                dataType: 'json',
+                success: function (result) {
+                    if (result.length>0) {
+                        _$this.tableData8 = result;
+                    } else {
+                        _$this.tableData8 = [];
+                    }
+
+                },
+                error: function () {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        //条件搜索
         seachjxc (){
             var jxcform = this.jxcform;
             var _$this = this;
@@ -804,6 +908,23 @@ new Vue({
                 error: function () {
                     console.log('error submit!!');
                     return false;
+                }
+            });
+        },
+        selectListjxcbf() {
+            var newthis = this;
+            var url = '/jxcbf/lists';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                dataType: 'json',
+                success: function (result) {
+                    if (result.length>0) {
+                        newthis.tableData8 = result;
+                    }
+                },
+                error: function () {
+
                 }
             });
         },
@@ -1044,6 +1165,10 @@ new Vue({
         handleSelectionChangejxc(val) {
             this.multipleSelection = val;
         },
+        handleSelectionChangejxcbf(val) {
+            this.multipleSelection = val;
+        },
+
 
         //table标签触发事件
         tableclick (tab, event){
@@ -1054,20 +1179,21 @@ new Vue({
             if(tab.index==1) {
                 newthis.listrc();
                 setTimeout(function (){
-                    newthis.getSummariesrc();
-                },1500);
+                    // newthis.getSummariesrc();
+                },2500);
             }
             if(tab.index==2) {
                 newthis.listcc();
                 setTimeout(function (){
-                    newthis.getSummariescc();
-                },1500);
+                    // newthis.getSummariescc();
+                },2500);
             }
             if(tab.index==3) {
                 newthis.jxclist();
+                newthis.selectListjxcbf();
                 setTimeout(function (){
-                    newthis.getSummariesjxc();
-                },1500);
+                    // newthis.getSummariesjxc();
+                },2500);
             }
         },
         //list search
@@ -1149,6 +1275,13 @@ new Vue({
         handleCurrentChangejxc: function (currentPagejxc) {
             this.currentPagejxc = currentPagejxc;
             console.log(this.currentPagejxc)  //点击第几页
+        },
+        // 初始页currentPage、初始每页数据数pagesize和数据data
+        handleSizeChangejxcbf: function (size) {
+            this.pagesizejxcbf = size;
+        },
+        handleCurrentChangejxcbf: function (currentPagejxcbf) {
+            this.currentPagejxcbf = currentPagejxcbf;
         },
         handleSizeChangecc: function (size) {
             this.pagesizecc = size;
@@ -1496,7 +1629,7 @@ new Vue({
 
         //入库
         getSummariesrc(param) {
-            const { columns, data } = param;
+            const {columns,data} = param;
             const sums = [];
             columns.forEach((column, index) => {
                 if (index === 0) {
@@ -1505,39 +1638,43 @@ new Vue({
                 }
 
                 if (index === 1) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 2) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 3) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 4) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 5) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 9) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 10) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 11) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
+                    return;
+                }
+                if (index === 12) {
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 13) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
 
@@ -1554,17 +1691,13 @@ new Vue({
                     }, 0);
                     if(index ===8) {
                         sums[index] += ' 件';
-                    }else if(index ===6) {
-                        sums[index] += ' 件';
-                    } else if(index ===7) {
-                        sums[index] += ' 件';
-                    } else {
-                        sums[index] += ' ';
                     }
-
-
-                } else {
-                    sums[index] = 'N/A';
+                    if(index ===6) {
+                        sums[index] += ' 件';
+                    }
+                    if(index ===7) {
+                        sums[index] += ' 件';
+                    }
                 }
             });
 
@@ -1581,27 +1714,27 @@ new Vue({
                 }
 
                 if (index === 1) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 2) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 3) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 4) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 11) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 12) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
 
@@ -1628,13 +1761,7 @@ new Vue({
                         sums[index] += ' 件';
                     } else if(index ===7) {
                         sums[index] += ' 件';
-                    } else {
-                        sums[index] += ' ';
                     }
-
-
-                } else {
-                    sums[index] = 'N/A';
                 }
             });
 
@@ -1649,51 +1776,51 @@ new Vue({
                     return;
                 }
                 if (index === 1) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 2) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 3) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 4) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 5) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 6) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 10) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 11) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 12) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 13) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 14) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 if (index === 15) {
-                    sums[index] = ' ';
+                    sums[index] = '-';
                     return;
                 }
                 const values = data.map(item => Number(item[column.property]));
@@ -1710,8 +1837,8 @@ new Vue({
                         sums[index] += ' 元';
                     }else if(index ===9) {
                         sums[index] += ' 元';
-                    } else {
-                        sums[index] += ' ';
+                    } else if(index ===7) {
+                        sums[index] += ' 元';
                     }
 
 
