@@ -54,12 +54,19 @@
     <el-card class="box-card">
 
         <template>
-            <div style="text-align: right">
-                <el-button type="danger"  icon="el-icon-turn-off"  @click="out" size="mini">out</el-button>
-            </div>
+            <el-row :gutter="20">
+                <el-col :span="6">
+                    <el-tag  icon="el-icon-turn-off" style="width: 200px;height: 100px;text-align: center;" ><div style="margin-top: 15px;"><strong>总库存数</strong><br><strong style="font-size: 30px;"><i class="el-icon-s-flag" style="color: red"></i>&nbsp;&nbsp;<span id="zkcs">0</span></strong></div></el-tag></el-col>
+                <el-col :span="6">
+                    <el-tag type="success" style="width: 200px;height: 100px;text-align: center;" ><div style="margin-top: 15px;"><strong>总订单数</strong><br><strong style="font-size: 30px;"><i class="el-icon-s-flag" style="color: blue"></i>&nbsp;&nbsp;<span id="zdds">0</span></strong></div></el-tag></el-col>
+                <el-col :span="6">
+                    <el-tag type="info" style="width: 200px;height: 100px;text-align: center;" ><div style="margin-top: 15px;"><strong>总货柜数</strong><br><strong style="font-size: 30px;"><i class="el-icon-star-on" style="color: darkred"></i>&nbsp;&nbsp;<span id="zhgs">0</span></strong></div></el-tag></el-col>
+                <el-col :span="6">
+                    <el-tag type="warning" style="width: 200px;height: 100px;text-align: center;" ><div style="margin-top: 15px;"><strong>货品种类</strong><br><strong style="font-size: 30px;"><i class="el-icon-s-promotion" style="color: blue"></i>&nbsp;&nbsp;<span id="hpzl">0</span></strong></div></el-tag></el-col>
+            </el-row><br>
             <div style="text-align: center;">
                 <span style="font-size: 40px; color: #696e6d;"><strong><!--<i class="el-icon-truck"></i>-->库存管理平台</strong></span><br>
-                <span style="font-size: 20px; color: #5b5d5c;"><strong>KU CUN GUAN LI PING TAI</strong></span>
+                <span style="font-size: 20px; color: #5b5d5c; margin-left: 40px"><strong>    KU CUN GUAN LI PING TAI </strong><el-link type="danger" @click="out">退出</el-link></span>
             </div><br><br>
             <el-tabs type="border-card" @tab-click="tableclick" value ="hglist">
                 <el-tab-pane label="货柜详情信息" name="hglist">
@@ -1272,8 +1279,6 @@
                      <el-button type="primary" @click="orSaveHandlerrc">保 存</el-button>
                     <el-button  @click="fh">取 消</el-button>
                  </span>
-<!--        <el-button @click="addDomainrc">新增域名</el-button>-->
-<!--        <el-button  @click="addCol">添加商品</el-button>-->
 
     </el-dialog>
     <!--出仓单-->
@@ -1399,8 +1404,6 @@
                      <el-button type="primary" @click="orSaveHandlercc">保 存</el-button>
                     <el-button  @click="ccfh">取 消</el-button>
                  </span>
-        <!--        <el-button @click="addDomainrc">新增域名</el-button>-->
-        <!--        <el-button  @click="addCol">添加商品</el-button>-->
 
     </el-dialog>
     <!--回到顶部-->

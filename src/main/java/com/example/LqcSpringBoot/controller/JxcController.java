@@ -1,10 +1,7 @@
 package com.example.LqcSpringBoot.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.LqcSpringBoot.mapper.CcMapper;
-import com.example.LqcSpringBoot.mapper.JxcMapper;
-import com.example.LqcSpringBoot.mapper.JxctablebfMapper;
-import com.example.LqcSpringBoot.mapper.RcMapper;
+import com.example.LqcSpringBoot.mapper.*;
 import com.example.LqcSpringBoot.model.Cctable;
 import com.example.LqcSpringBoot.model.Jxctable;
 import com.example.LqcSpringBoot.model.Jxctablebf;
@@ -18,9 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 进销存
@@ -31,9 +26,33 @@ import java.util.Map;
 public class JxcController {
     @Autowired
     public JxcMapper jxc;
-
     @Autowired
     public JxctablebfMapper jxctablebf;
+    @Autowired
+    public CcMapper cct;
+    @Autowired
+    public RcMapper rc;
+    @Autowired
+    public ContainerMapper kmapper;
+
+    /**
+     * 统计数据
+     */
+    @RequestMapping("/tj")
+    @ResponseBody
+    public List<Map<String,String>> tjs () {
+        List list = new ArrayList<>();
+        Map map = new HashMap();
+        String zdds = cct.selectcountBYtable();//出库单号
+        Map m = rc.selectcountBYtable();//库存总数和
+        String zhgs = kmapper.selectcountBYtable();//总货柜数
+        map.put("zdds",zdds);
+        map.put("zhgs",zhgs);
+        map.put("hpzl",String.valueOf(m.get("hwpz")));
+        map.put("zkcs",String.valueOf(m.get("zkcs")));
+        list.add(map);
+        return list;
+    }
 
     /**
      * 定时任务 跑表到备份表

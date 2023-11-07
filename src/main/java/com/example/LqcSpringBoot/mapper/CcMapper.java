@@ -20,4 +20,6 @@ public interface CcMapper extends BaseMapper<Cctable> {
 
     //删除
     Integer deleteKuserById(String id);
+
+    String selectcountBYtable();//出库总数
 }

@@ -139,11 +139,30 @@ new Vue({
     //初始化
     mounted: function () {
         this.list();
+        //统计
+        this.tj();
     },
     //方法事件
     methods: {
-        addCol(){
-            this.cols.push({prop: 'name', label: '地址'})
+        //统计
+        tj(){
+            var url = '/jxc/tj';
+            $.ajax({
+                type: 'POST',
+                url: url,
+                dataType: 'json',
+                success: function (res) {
+                    document.getElementById("hpzl").innerHTML=res[0].hpzl;
+                    document.getElementById("zhgs").innerHTML=res[0].zhgs;
+                    document.getElementById("zkcs").innerHTML=res[0].zkcs ;
+                    document.getElementById("zdds").innerHTML=res[0].zdds;
+                },
+                error: function () {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+
         },
         //退出
         out() {
@@ -668,6 +687,7 @@ new Vue({
                             message: '恭喜你，添加货柜成功',
                             type: 'success'
                         });
+                        newthis.tj();
                     } else {
                         newthis.$message.error('很遗憾，添加失败');
                     }
@@ -715,6 +735,16 @@ new Vue({
             }else{
                 //return;
                 dd2 = _$this.formatDates(jxcbfform.rcval2)
+            }
+
+            if(dd1=="" || dd1==null) {
+                _$this.$message.error('请填写开始时间');
+                return;
+            }
+
+            if(dd2=="" || dd2==null) {
+                _$this.$message.error('请填写结束时间');
+                return;
             }
 
             var d = {
@@ -1190,7 +1220,7 @@ new Vue({
             }
             if(tab.index==3) {
                 newthis.jxclist();
-                newthis.selectListjxcbf();
+                //newthis.selectListjxcbf();
                 setTimeout(function (){
                     // newthis.getSummariesjxc();
                 },2500);
@@ -1429,6 +1459,7 @@ new Vue({
                             newthis.flag=2;
                             return false;
                         }
+                        newthis.tj();
                     },
                     error: function () {
                         console.log('error submit!!');
@@ -1558,6 +1589,7 @@ new Vue({
                             type: 'success'
                         });
                         newthis.listrc();
+                        newthis.tj();
                     } else {
                         newthis.$message.error('设置失败');
                     }

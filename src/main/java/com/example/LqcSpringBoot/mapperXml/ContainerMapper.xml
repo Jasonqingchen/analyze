@@ -114,4 +114,9 @@
       t.cm = #{cm}
     where id = #{id}
   </update>
+
+  <!--总货柜数-->
+  <select id="selectcountBYtable" resultType="java.lang.String">
+    select count(DISTINCT gnumber) AS hgzs FROM container;
+  </select>
 </mapper>

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 入仓
@@ -20,5 +21,7 @@ public interface RcMapper extends BaseMapper<Rctable> {
     //删除
     Integer deleteKuserById(String id);
     List<Rctable> selectListByGnumber(String Gnumber);//关联查询
+
+    Map selectcountBYtable();
 
 }

@@ -46,4 +46,8 @@
   <delete id="deleteKuserById">
     delete from cctable where id = #{id};
   </delete>
+  <!--出库总数-->
+  <select id="selectcountBYtable" resultType="java.lang.String">
+    select count(DISTINCT orderid) AS zdds FROM cctable
+  </select>
 </mapper>

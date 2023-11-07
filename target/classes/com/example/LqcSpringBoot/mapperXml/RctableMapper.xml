@@ -53,4 +53,8 @@
   <delete id="deleteKuserById">
     delete from rctable where id = #{id};
   </delete>
+  <!--库存总数-->
+  <select id="selectcountBYtable" resultType="java.util.Map">
+    select CAST(SUM(rccount) as DECIMAL)  AS zkcs,count(1) as hwpz FROM rctable;
+  </select>
 </mapper>
