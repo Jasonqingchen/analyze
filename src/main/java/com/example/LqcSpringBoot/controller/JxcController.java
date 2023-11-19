@@ -63,25 +63,28 @@ public class JxcController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         List<Jxctable> jxcs = jxc.selectAll();
-        jxcs.forEach(jxctables -> {
-            Jxctablebf jbf = new Jxctablebf();
-            jbf.setDate(sdf.format(new Date()));
-            jbf.setBz(jxctables.getBz());
-            jbf.setPnumber(jxctables.getPnumber());
-            jbf.setPname(jxctables.getPname());
-            jbf.setColor(jxctables.getColor());
-            jbf.setType(jxctables.getType());
-            jbf.setQcs(jxctables.getQcs());
-            jbf.setRccount(jxctables.getRccount());
-            jbf.setCccount(jxctables.getCccount());
-            jbf.setJccount(jxctables.getJccount());
-            jbf.setPdcount(jxctables.getPdcount());
-            jbf.setCycount(jxctables.getCycount());
-            jbf.setPdstatus(jxctables.getPdstatus());
-            jbf.setId(cn.hutool.core.lang.UUID.randomUUID().toString().replace("-", ""));
-            jxctablebf.insert(jbf);
+        if (jxcs.size()>0) {
+            jxcs.forEach(jxctables -> {
+                Jxctablebf jbf = new Jxctablebf();
+                jbf.setDate(sdf.format(new Date()));
+                jbf.setBz(jxctables.getBz());
+                jbf.setPnumber(jxctables.getPnumber());
+                jbf.setPname(jxctables.getPname());
+                jbf.setColor(jxctables.getColor());
+                jbf.setType(jxctables.getType());
+                jbf.setQcs(jxctables.getQcs());
+                jbf.setRccount(jxctables.getRccount());
+                jbf.setCccount(jxctables.getCccount());
+                jbf.setJccount(jxctables.getJccount());
+                jbf.setPdcount(jxctables.getPdcount());
+                jbf.setCycount(jxctables.getCycount());
+                jbf.setPdstatus(jxctables.getPdstatus());
+                jbf.setId(cn.hutool.core.lang.UUID.randomUUID().toString().replace("-", ""));
+                jxctablebf.insert(jbf);
 
-        });
+            });
+        }
+
     }
 
     /**

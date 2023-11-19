@@ -17,6 +17,11 @@
     <result column="count" property="count" jdbcType="VARCHAR" />
     <result column="price" property="price" jdbcType="VARCHAR" />
     <result column="dls" property="dls" jdbcType="VARCHAR" />
+
+    <result column="pol" property="pol" jdbcType="VARCHAR" />
+    <result column="pod" property="pod" jdbcType="VARCHAR" />
+    <result column="chuanname" property="chuanname" jdbcType="VARCHAR" />
+    <result column="dlgs" property="dlgs" jdbcType="VARCHAR" />
   </resultMap>
   <!--search lists-->
   <select id="selectList" resultMap="BaseResultMap" >
@@ -86,8 +91,8 @@
     <if test="gnumber != null and gnumber != ''">
       AND t.gnumber = #{gnumber}
     </if>
-    <if test="banknumber != null and banknumber != ''">
-      AND t.banknumber = #{banknumber}
+    <if test="pod != null and pod != ''">
+      AND t.pod = #{pod}
     </if>
     <if test="phone != null and phone != ''">
       AND t.phone = #{phone}

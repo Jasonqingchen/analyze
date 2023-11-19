@@ -77,7 +77,7 @@ public class ContainerController {
     @RequestMapping("/seach_ht")
     @ResponseBody
     public List<Container> seach (@RequestParam Map map) {
-        List<Container> list = kmapper.selectKuserBysameting((String)map.get("gnumber"),(String)map.get("banknumber"),(String)map.get("phone"));
+        List<Container> list = kmapper.selectKuserBysameting((String)map.get("gnumber"),(String)map.get("pod"),(String)map.get("phone"));
         return list;
     }
 

@@ -15,7 +15,7 @@ public interface ContainerMapper extends BaseMapper<Container> {
     //小程序根据真实名字查询
     List<Container> selectByName(String name);
     //根据name 或 num 查询
-    List<Container> selectKuserBysameting(@Param("gnumber") String gnumber,@Param("banknumber") String banknumber,@Param("phone") String phone);
+    List<Container> selectKuserBysameting(@Param("gnumber") String gnumber,@Param("pod") String pod,@Param("phone") String phone);
     //删除
     Integer deleteKuserById(String id);
     //清空表

@@ -72,7 +72,7 @@ new Vue({
             pagesizegl: 10,    //    每页的数据
             searchcc: '',
             form:{
-                banknumber:'',
+                pod:'',
                 gnumber:'',
                 phone:''
             },
@@ -115,7 +115,11 @@ new Vue({
                 content:'',
                 type:'',
                 count:'',
-                price:''
+                price:'',
+                pol:'',
+                pod:'',
+                chuanname:'',
+                dlgs:''
             },
             editForm:{
                 id:'',
@@ -131,7 +135,11 @@ new Vue({
                 content:'',
                 type:'',
                 count:'',
-                price:''
+                price:'',
+                pol:'',
+                pod:'',
+                chuanname:'',
+                dlgs:''
             }
         }
     },
@@ -152,6 +160,18 @@ new Vue({
                 url: url,
                 dataType: 'json',
                 success: function (res) {
+                    if(res[0].hpzl=='null' || res[0].hpzl=="") {
+                        res[0].hpzl="0";
+                    }
+                    if(res[0].zhgs=='null' || res[0].zhgs=="") {
+                        res[0].zhgs="0";
+                    }
+                    if(res[0].zkcs=='null' || res[0].zkcs=="") {
+                        res[0].zkcs="0";
+                    }
+                    if(res[0].zdds=='null' || res[0].zdds=="") {
+                        res[0].zdds="0";
+                    }
                     document.getElementById("hpzl").innerHTML=res[0].hpzl;
                     document.getElementById("zhgs").innerHTML=res[0].zhgs;
                     document.getElementById("zkcs").innerHTML=res[0].zkcs ;
@@ -209,6 +229,10 @@ new Vue({
             form1.rcval1 = dd1;
             form1.rcval2 = dd2;
 
+            if(dd1=="" || dd2=="") {
+                _$this.$message.error('不能导出全部数据，请选择日期区间');
+                return;
+            }
             document.body.appendChild(form1);
             // 创建一个输入
             var input2 = document.createElement("input");
@@ -433,7 +457,7 @@ new Vue({
             var form1 = document.createElement("form");
             form1.gnumber = f.gnumber;
             form1.phone = f.phone;
-            form1.banknumber = f.banknumber;
+            form1.pod = f.pod;
             document.body.appendChild(form1);
             // 创建一个输入
             var input = document.createElement("input");
@@ -450,8 +474,8 @@ new Vue({
             var input3 = document.createElement("input");
             // 设置相应参数
             input3.type = "text";
-            input3.name = "banknumber";
-            input3.value = f.banknumber;
+            input3.name = "pod";
+            input3.value = f.pod;
             // 将该输入框插入到 form 中
             form1.appendChild(input);
             form1.appendChild(input2);
@@ -544,16 +568,16 @@ new Vue({
                 newthis.$message.error('货柜号不能为空');
                 return;
             }
-            if (editForm.bankname=="" || editForm.bankname==null) {
-                newthis.$message.error('所属银行不能为空');
+            if (editForm.pol=="" || editForm.pol==null) {
+                newthis.$message.error('出发港不能为空');
                 return;
             }
             if (editForm.cgdate=="" || editForm.cgdate==null) {
                 newthis.$message.error('出港时间不能为空');
                 return;
             }
-            if (editForm.banknumber=="" || editForm.banknumber==null) {
-                newthis.$message.error('银行卡号不能为空');
+            if (editForm.pod=="" || editForm.pod==null) {
+                newthis.$message.error('目的港不能为空');
                 return;
             }
             if (editForm.content=="" || editForm.content==null) {
@@ -572,6 +596,14 @@ new Vue({
                 newthis.$message.error('货值不能为空');
                 return;
             }
+            if (editForm.chuanname=="" || editForm.chuanname==null) {
+                newthis.$message.error('船公司不能为空');
+                return;
+            }
+            if (editForm.dlgs=="" || editForm.dlgs==null) {
+                newthis.$message.error('代理公司不能为空');
+                return;
+            }
            var  cgdate=  this.updateformatDate(editForm.cgdate);
            var  dgdate=  this.updateformatDate(editForm.dgdate);
             var m = {
@@ -580,16 +612,18 @@ new Vue({
                 'gysfs': editForm.gysfs,
                 'gnumber': editForm.gnumber,
                 'gsize': editForm.gsize,
-                'bankname': editForm.bankname,
+                'pol': editForm.pol,
                 'cgdate': cgdate,
-                'banknumber': editForm.banknumber,
+                'pod': editForm.pod,
                 'content': editForm.content,
                 'dgdate': dgdate,
                 'type': editForm.type,
                 'status': editForm.status,
                 'count': editForm.count,
                 'dls': editForm.dls,
-                'price': editForm.price
+                'price': editForm.price,
+                'price': editForm.chuanname,
+                'price': editForm.dlgs
             };
             var url = '/container/updates';
             $.ajax({
@@ -631,16 +665,25 @@ new Vue({
                 newthis.$message.error('货柜号不能为空');
                 return;
             }
-            if (addForm.bankname=="" || addForm.bankname==null) {
-                newthis.$message.error('所属银行不能为空');
+            if (addForm.pol=="" || addForm.pol==null) {
+                newthis.$message.error('出发港不能为空');
+                return;
+            }
+
+            if (addForm.chuanname=="" || addForm.chuanname==null) {
+                newthis.$message.error('船公司不能为空');
+                return;
+            }
+            if (addForm.dlgs=="" || addForm.dlgs==null) {
+                newthis.$message.error('代理公司不能为空');
                 return;
             }
             if (addForm.cgdate=="" || addForm.cgdate==null) {
                 newthis.$message.error('出港时间不能为空');
                 return;
             }
-            if (addForm.banknumber=="" || addForm.banknumber==null) {
-                newthis.$message.error('银行卡号不能为空');
+            if (addForm.pod=="" || addForm.pod==null) {
+                newthis.$message.error('目的港不能为空');
                 return;
             }
             if (addForm.content=="" || addForm.content==null) {
@@ -664,14 +707,17 @@ new Vue({
                 'gysfs': addForm.gysfs,
                 'gnumber': addForm.gnumber,
                 'gsize': addForm.gsize,
-                'bankname': addForm.bankname,
-                'cgdate': addForm.cgdate,
-                'banknumber': addForm.banknumber,
+                'pol': addForm.pol,
+                'cgdate': newthis.updateformatDate(addForm.cgdate),
+                'pod': addForm.pod,
                 'content': addForm.content,
                 'type': addForm.type,
                 'count': addForm.count,
                 'dls': addForm.dls,
-                'price': addForm.price
+                'price': addForm.price,
+                'chuanname': addForm.chuanname,
+                'dlgs': addForm.dlgs,
+                'dgdate': newthis.updateformatDate(addForm.dgdate)
             };
             var url = '/container/add';
             $.ajax({
@@ -824,7 +870,7 @@ new Vue({
             var _$this = this;
             var d = {
                 'gnumber': form.gnumber,
-                'banknumber': form.banknumber,
+                'pod': form.pod,
                 'phone': form.phone
             };
             var url = '/container/seach_ht';

@@ -162,7 +162,7 @@ public class ExcelController {
      */
     @RequestMapping(value = "/dc", method = RequestMethod.POST)
     public void aochuExcel(HttpServletResponse response,Container container) throws Exception {
-    String[] rowsName = new String[] { "柜号", "运输方式", "联系方式", "付款银行", "银行账号" , "柜子尺寸" , "出港时间" , "到港时间" , "状态" , " 代理费是否支付" , "类别" , "数量" , "货值" ,"内容"};
+    String[] rowsName = new String[] { "提单号", "运输方式", "联系方式", "POL", "POD" , "柜子尺寸"  , "代理费是否支付" , "类别" , "数量" , "货值" ,"船公司","出港时间","到港时间","代理公司","状态","补充说明"};
                 // 进行查新（导出所有）
         List<Container> c = cm.selectKuserBysameting(container.getGnumber(),container.getBanknumber(),container.getPhone());
             List<Object[]> dataList = new ArrayList<Object[]>();
@@ -173,17 +173,19 @@ public class ExcelController {
             objs[0] =  man.getGnumber();
             objs[1] =  man.getGysfs();
             objs[2] =  man.getPhone();
-            objs[3] =  man.getBankname();
-            objs[4] =  man.getBanknumber();
+            objs[3] =  man.getPol();
+            objs[4] =  man.getPod();
             objs[5] =  man.getGsize();
-            objs[6] =  man.getCgdate();
-            objs[7] =  man.getDgdate();
-            objs[8] =  man.getStatus();
-            objs[9] =  man.getDls();
-            objs[10] =  man.getType();
-            objs[11] =  man.getCount();
-            objs[12] =  man.getPrice();
-            objs[13] =  man.getContent();
+            objs[6] =  man.getDls();
+            objs[7] =  man.getType();
+            objs[8] =  man.getCount();
+            objs[9] =  man.getPrice();
+            objs[10] =  man.getChuanname();
+            objs[11] =  man.getCgdate();
+            objs[12] =  man.getDgdate();
+            objs[13] =  man.getDlgs();
+            objs[14] =  man.getStatus();
+            objs[15] =  man.getContent();
             dataList.add(objs);
             }
             ExportExcel ex = new ExportExcel("货柜信息列表", rowsName, dataList);

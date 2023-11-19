@@ -45,19 +45,20 @@ public class MainPartimportBean {
 
             int totalRow = sheet.getLastRowNum();// 得到excel的总记录条数
             String gnumber = "";//第1列
-            String gdbfs = "";//第2列
-            String gysfs = "";//第3列
-            String phone = "";//4列
-            String bankname = "";//第5列
-            String banknumber = "";//第7列
-            String gsize = "";//第8列
-            String cgdate = "";//第9列
-            String dgdate = "";//第10列
-            String status = "";//第11列
-            String dls = "";//第12列
-            String type = "";//第13列
-            String count = "";//第14列
-            String price = "";//第15列
+            String gysfs = "";//第2列
+            String phone = "";//第3列
+            String pol = "";//4列
+            String pod = "";//第5列
+            String gsize = "";//第6列
+            String dls = "";//第7列
+            String type = "";//第8列
+            String count = "";//第9列
+            String price = "";//第10列
+            String chuanname = "";//第11列
+            String cgdate = "";//第12列
+            String dgdate = "";//第13列
+            String dlgs = "";//第14列
+            String status ="";//第 15 行
             String content  = "";//第16列
             int x =0;
             for (short i = 1; i <=totalRow; i++) {
@@ -85,15 +86,15 @@ public class MainPartimportBean {
                 cell = sheet.getRow(i).getCell((short)3);
                 if(cell!=null){
                     sheet.getRow(i).getCell(3).setCellType(CellType.STRING);
-                    bankname =sheet.getRow(i).getCell(3).getStringCellValue();
-                    mp1.setBankname(bankname);
+                    pol =sheet.getRow(i).getCell(3).getStringCellValue();
+                    mp1.setPol(pol);
 
                 }
                 cell = sheet.getRow(i).getCell((short)4);
                 if(cell!=null){
                     sheet.getRow(i).getCell(4).setCellType(CellType.STRING);
-                    banknumber =sheet.getRow(i).getCell(4).getStringCellValue();
-                    mp1.setBanknumber(banknumber);
+                    pod =sheet.getRow(i).getCell(4).getStringCellValue();
+                    mp1.setPod(pod);
 
                 }
                 cell = sheet.getRow(i).getCell((short)5);
@@ -106,62 +107,75 @@ public class MainPartimportBean {
                 cell = sheet.getRow(i).getCell((short)6);
                 if(cell!=null){
                     sheet.getRow(i).getCell(6).setCellType(CellType.STRING);
-                    cgdate =sheet.getRow(i).getCell(6).getStringCellValue();
-                    Date date = org.apache.poi.ss.usermodel.DateUtil
-                            .getJavaDate(Double.valueOf(cgdate));
-                    mp1.setCgdate(format.format(date));
+                    dls =sheet.getRow(i).getCell(6).getStringCellValue();
+                    mp1.setDls(dls);
 
                 }
                 cell = sheet.getRow(i).getCell((short)7);
                 if(cell!=null){
                     sheet.getRow(i).getCell(7).setCellType(CellType.STRING);
-                    dgdate =sheet.getRow(i).getCell(7).getStringCellValue();
-                    Date date = org.apache.poi.ss.usermodel.DateUtil
-                            .getJavaDate(Double.valueOf(dgdate));
-                    mp1.setDgdate(format.format(date));
+                    type =sheet.getRow(i).getCell(7).getStringCellValue();
+                    mp1.setType(type);
 
                 }
                 cell = sheet.getRow(i).getCell((short)8);
                 if(cell!=null){
                     sheet.getRow(i).getCell(8).setCellType(CellType.STRING);
-                    status =sheet.getRow(i).getCell(8).getStringCellValue();
-                    mp1.setStatus(status);
+                    count =sheet.getRow(i).getCell(8).getStringCellValue();
+                    mp1.setCount(count);
 
                 }
                 cell = sheet.getRow(i).getCell((short)9);
                 if(cell!=null){
                     sheet.getRow(i).getCell(9).setCellType(CellType.STRING);
-                    dls =sheet.getRow(i).getCell(9).getStringCellValue();
-                    mp1.setDls(dls);
+                    price =sheet.getRow(i).getCell(9).getStringCellValue();
+                    mp1.setPrice(price);
 
                 }
                 cell = sheet.getRow(i).getCell((short)10);
                 if(cell!=null){
                     sheet.getRow(i).getCell(10).setCellType(CellType.STRING);
-                    type =sheet.getRow(i).getCell(10).getStringCellValue();
-                    mp1.setType(type);
+                    chuanname =sheet.getRow(i).getCell(10).getStringCellValue();
+                    mp1.setChuanname(chuanname);
 
                 }
                 cell = sheet.getRow(i).getCell((short)11);
                 if(cell!=null){
                     sheet.getRow(i).getCell(11).setCellType(CellType.STRING);
-                    count =sheet.getRow(i).getCell(11).getStringCellValue();
-                    mp1.setCount(count);
+                    cgdate =sheet.getRow(i).getCell(11).getStringCellValue();
+                    Date date = org.apache.poi.ss.usermodel.DateUtil
+                            .getJavaDate(Double.valueOf(cgdate));
+                    mp1.setCgdate(format.format(date));
 
                 }
                 cell = sheet.getRow(i).getCell((short)12);
                 if(cell!=null){
                     sheet.getRow(i).getCell(12).setCellType(CellType.STRING);
-                    price =sheet.getRow(i).getCell(12).getStringCellValue();
-                    mp1.setPrice(price);
+                    dgdate =sheet.getRow(i).getCell(12).getStringCellValue();
+                    Date date = org.apache.poi.ss.usermodel.DateUtil
+                            .getJavaDate(Double.valueOf(dgdate));
+                    mp1.setDgdate(format.format(date));
 
                 }
                 cell = sheet.getRow(i).getCell((short)13);
                 if(cell!=null){
                     sheet.getRow(i).getCell(13).setCellType(CellType.STRING);
-                    content =sheet.getRow(i).getCell(13).getStringCellValue();
-                    mp1.setContent(content);
+                    dlgs =sheet.getRow(i).getCell(13).getStringCellValue();
+                    mp1.setDlgs(dlgs);
 
+                }
+                cell = sheet.getRow(i).getCell((short)14);
+                if(cell!=null){
+                    sheet.getRow(i).getCell(14).setCellType(CellType.STRING);
+                    status =sheet.getRow(i).getCell(14).getStringCellValue();
+                    mp1.setStatus(status);
+
+                }
+                cell = sheet.getRow(i).getCell((short)15);
+                if(cell!=null){
+                    sheet.getRow(i).getCell(15).setCellType(CellType.STRING);
+                    content =sheet.getRow(i).getCell(15).getStringCellValue();
+                    mp1.setContent(content);
                 }
 
                 String gnum = cMapper.selectByGnumber(gnumber);

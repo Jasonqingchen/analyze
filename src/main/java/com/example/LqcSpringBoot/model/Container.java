@@ -34,6 +34,14 @@ public class Container implements Serializable {
     private String price;
     private String dls;
 
+    private String pol;
+
+    private String pod;
+
+    private String chuanname;
+
+    private String dlgs;
+
     private static final long serialVersionUID = 1L;
 
     public String getId() {
@@ -155,5 +163,37 @@ public class Container implements Serializable {
 
     public void setDls(String dls) {
         this.dls = dls;
+    }
+
+    public String getPol() {
+        return pol;
+    }
+
+    public void setPol(String pol) {
+        this.pol = pol;
+    }
+
+    public String getPod() {
+        return pod;
+    }
+
+    public void setPod(String pod) {
+        this.pod = pod;
+    }
+
+    public String getChuanname() {
+        return chuanname;
+    }
+
+    public void setChuanname(String chuanname) {
+        this.chuanname = chuanname;
+    }
+
+    public String getDlgs() {
+        return dlgs;
+    }
+
+    public void setDlgs(String dlgs) {
+        this.dlgs = dlgs;
     }
 }
