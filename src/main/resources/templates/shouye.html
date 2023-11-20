@@ -1167,12 +1167,20 @@
                 <el-input v-model="editForm.type" id="type" placeholder="请输入货柜类别"
                           style="width: 100%;"></el-input>
             </el-form-item>
-            <el-form-item label="货品数量：" prop="count">
+            <el-form-item label="数量：" prop="count">
                 <el-input v-model="editForm.count" id="count" placeholder="请输入"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="船公司：" prop="count">
+                <el-input v-model="editForm.chuanname" id="chuanname" placeholder="请输入船公司"
                           style="width: 100%;"></el-input>
             </el-form-item>
             <el-form-item label="货值：" prop="price">
                 <el-input v-model="editForm.price" id="price" placeholder="请输入货值"
+                          style="width: 100%;"></el-input>
+            </el-form-item>
+            <el-form-item label="代理公司：" prop="price">
+                <el-input v-model="editForm.dlgs" id="dlgs" placeholder="请输入代理公司"
                           style="width: 100%;"></el-input>
             </el-form-item>
             <el-form-item label="代理费是否支付：" prop="dls" >

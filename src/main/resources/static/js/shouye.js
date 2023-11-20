@@ -622,8 +622,8 @@ new Vue({
                 'count': editForm.count,
                 'dls': editForm.dls,
                 'price': editForm.price,
-                'price': editForm.chuanname,
-                'price': editForm.dlgs
+                'chuanname': editForm.chuanname,
+                'dlgs': editForm.dlgs
             };
             var url = '/container/updates';
             $.ajax({
@@ -1663,8 +1663,8 @@ new Vue({
         },
         cbdj(index){
             var newthis =this;
-            var s1 = parseInt(this.rcdynamicValidateForm.rcdetil[index].rccount);
-            var s2 = parseInt(this.rcdynamicValidateForm.rcdetil[index].costprice);
+            var s1 = parseFloat(this.rcdynamicValidateForm.rcdetil[index].rccount);
+            var s2 = parseFloat(this.rcdynamicValidateForm.rcdetil[index].costprice);
             if (Number.isNaN(s1)){
                 newthis.$message.error('入库数为空，请填写入库数');
                 return;
@@ -1678,8 +1678,8 @@ new Vue({
         //出库计算
         rescc(index){
             var newthis =this;
-            var s1 = parseInt(this.ccdynamicValidateForm.rcdetil[index].cccount);
-            var s2 = parseInt(this.ccdynamicValidateForm.rcdetil[index].ccprice);
+            var s1 = parseFloat(this.ccdynamicValidateForm.rcdetil[index].cccount);
+            var s2 = parseFloat(this.ccdynamicValidateForm.rcdetil[index].ccprice);
             if (Number.isNaN(s1)){
                 newthis.$message.error('出库数为空，请填写出库数');
                 return;
@@ -1692,8 +1692,8 @@ new Vue({
         },
         cbdjcc(index){
             var newthis =this;
-            var s1 = parseInt(this.ccdynamicValidateForm.rcdetil[index].cccount);
-            var s2 = parseInt(this.ccdynamicValidateForm.rcdetil[index].ccprice);
+            var s1 = parseFloat(this.ccdynamicValidateForm.rcdetil[index].cccount);
+            var s2 = parseFloat(this.ccdynamicValidateForm.rcdetil[index].ccprice);
             if (Number.isNaN(s1)){
                 newthis.$message.error('出库数为空，请填写出库数');
                 return;
@@ -1767,9 +1767,6 @@ new Vue({
                             return prev;
                         }
                     }, 0);
-                    if(index ===8) {
-                        sums[index] += ' 件';
-                    }
                     if(index ===6) {
                         sums[index] += ' 件';
                     }
