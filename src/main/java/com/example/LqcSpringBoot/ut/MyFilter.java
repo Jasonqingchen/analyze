@@ -19,7 +19,7 @@ public class MyFilter extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         System.out.println("自定义拦截器");
-            registry.addInterceptor(new UserConfig()).addPathPatterns("/container/**").excludePathPatterns("/error/");
+            registry.addInterceptor(new UserConfig()).addPathPatterns("/container/**","/menu/**").excludePathPatterns("/error/");
             super.addInterceptors(registry);
     }
 }

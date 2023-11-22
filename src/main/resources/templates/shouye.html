@@ -50,7 +50,7 @@
 <body>
 <!--html代码 -->
 <div id="app">
-    <el-card class="bgc"></el-card>
+<!--    <el-card class="bgc"></el-card>-->
     <el-card class="box-card">
 
         <template>
@@ -66,7 +66,7 @@
             </el-row><br>
             <div style="text-align: center;">
                 <span style="font-size: 40px; color: #696e6d;"><strong><!--<i class="el-icon-truck"></i>-->库存管理平台</strong></span><br>
-                <span style="font-size: 20px; color: #5b5d5c; margin-left: 40px"><strong>    KU CUN GUAN LI PING TAI </strong><el-link type="danger" @click="out">退出</el-link></span>
+                <span style="font-size: 20px; color: #5b5d5c; margin-left: 40px"><strong>KU CUN GUAN LI PING TAI </strong><!--<el-link type="danger" @click="out">退出</el-link>--></span>
             </div><br><br>
             <el-tabs type="border-card" @tab-click="tableclick" value ="hglist">
                 <el-tab-pane label="货柜详情信息" name="hglist">
@@ -199,16 +199,6 @@
                                 width="150">
                         </el-table-column>
                         <el-table-column
-                                label="运输方式"
-                                prop="gysfs"
-                                width="180">
-                        </el-table-column>
-                        <el-table-column
-                                label="联系方式"
-                                prop="phone"
-                                width="220">
-                        </el-table-column>
-                        <el-table-column
                                 label="POL"
                                 prop="pol"
                                 width="120">
@@ -217,6 +207,50 @@
                                 label="POD"
                                 prop="pod"
                                 width="120">
+                        </el-table-column>
+                        <el-table-column
+                                label="船公司"
+                                prop="chuanname"
+                                width="120">
+                        </el-table-column>
+                        <el-table-column
+                                label="离港时间"
+                                prop="cgdate"
+                                sortable
+                                :formatter="formatDate"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                label="到港时间"
+                                prop="dgdate"
+                                sortable
+                                :formatter="formatDate"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                label="代理公司"
+                                prop="dlgs"
+                                width="120">
+                        </el-table-column>
+                        <el-table-column
+                                label="状态"
+                                prop="status"
+                                width="120">
+                            <template slot-scope="scope">
+                                <el-tag
+                                        :type="scope.row.status === '未到港' ? 'danger' : 'success'"
+                                        disable-transitions>{{scope.row.status}}</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="运输方式"
+                                prop="gysfs"
+                                width="180">
+                        </el-table-column>
+                        <el-table-column
+                                label="联系方式"
+                                prop="phone"
+                                width="220">
                         </el-table-column>
                         <el-table-column
                                 label="柜子尺寸"
@@ -247,40 +281,6 @@
                                 label="货值"
                                 prop="price"
                                 width="120">
-                        </el-table-column>
-                        <el-table-column
-                                label="船公司"
-                                prop="chuanname"
-                                width="120">
-                        </el-table-column>
-                        <el-table-column
-                                label="出港时间"
-                                prop="cgdate"
-                                sortable
-                                :formatter="formatDate"
-                                width="180">
-                        </el-table-column>
-                        <el-table-column
-                                label="到港时间"
-                                prop="dgdate"
-                                sortable
-                                :formatter="formatDate"
-                                width="180">
-                        </el-table-column>
-                        <el-table-column
-                                label="代理公司"
-                                prop="dlgs"
-                                width="120">
-                        </el-table-column>
-                        <el-table-column
-                                label="状态"
-                                prop="status"
-                                width="120">
-                            <template slot-scope="scope">
-                                <el-tag
-                                        :type="scope.row.status === '未到港' ? 'danger' : 'success'"
-                                        disable-transitions>{{scope.row.status}}</el-tag>
-                            </template>
                         </el-table-column>
                         <el-table-column
                                 label="补充说明"

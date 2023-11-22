@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -97,17 +98,23 @@ public class RcController {
             rcs.setRcdate(y+"-"+m+"-"+d);
             Rctable rctable = (Rctable) rc.selectBYPnumber(rcs.getPnumber());
             if(rctable!=null){
+                Jxctable jxctb = jxc.selectByPnamber(rcs.getPnumber());
+                jxctb.setRccount(String.valueOf(Integer.parseInt(jxctb.getRccount()) + Integer.parseInt(rcs.getRccount())));
+                jxctb.setJccount(String.valueOf(Integer.parseInt(jxctb.getJccount()) + Integer.parseInt(rcs.getRccount())));
                 //使用全平均
                 rcs.setId(rctable.getId());
                int newcostcount = Integer.parseInt(rctable.getCostcount()) + Integer.parseInt(rcs.getCostcount());//成本总价旧的
                int newcount = Integer.parseInt(rctable.getRccount()) + Integer.parseInt(rcs.getRccount());
-               int newcpostprice = newcostcount / newcount;
+                DecimalFormat df = new DecimalFormat("#.00");
+                double newcpostprice = (double)newcostcount / newcount;
+                double newcpostprices = Double.valueOf(df.format(newcpostprice));
                int i = Integer.parseInt(rctable.getRccount()) + Integer.parseInt(rcs.getRccount());
                 rcs.setRccount(String.valueOf(i));
-                rcs.setCostprice(String.valueOf(newcpostprice));
+                rcs.setCostprice(String.valueOf(newcpostprices));
                 rcs.setCostcount(String.valueOf(newcostcount));
                 //修改 加库存 和 加总价
                 rc.updateById(rcs);
+                jxc.updateById(jxctb);
             } else {
                 rcs.setCostcount(String.valueOf(Integer.parseInt(rcs.getRccount()) * Integer.parseInt(rcs.getCostprice())));
             //新增

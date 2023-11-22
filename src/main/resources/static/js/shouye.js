@@ -1660,6 +1660,7 @@ new Vue({
                 return;
             }
             document.getElementById(index).value = s1 * s2;
+            this.rcdynamicValidateForm.rcdetil[index].costcount = s1 * s2;
         },
         cbdj(index){
             var newthis =this;
@@ -1674,6 +1675,7 @@ new Vue({
                 return;
             }
             document.getElementById(index).value = s1 * s2;
+            this.rcdynamicValidateForm.rcdetil[index].costcount = s1 * s2;
         },
         //出库计算
         rescc(index){
@@ -1689,6 +1691,7 @@ new Vue({
                 return;
             }
             document.getElementById(index).value = s1 * s2;
+            this.ccdynamicValidateForm.rcdetil[index].ccsumprice = s1 * s2;
         },
         cbdjcc(index){
             var newthis =this;
@@ -1703,6 +1706,7 @@ new Vue({
                 return;
             }
             document.getElementById(index).value = s1 * s2;
+            this.ccdynamicValidateForm.rcdetil[index].ccsumprice = s1 * s2;
         },
 
         //入库
