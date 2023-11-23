@@ -39,4 +39,6 @@ public interface ContainerMapper extends BaseMapper<Container> {
     int updateKuser(@Param("cm") String cm,@Param("dyname") String dyname,@Param("name") String name,@Param("num") String num,@Param("id") String id,@Param("sex") String sex,@Param("phone") String phone);
 
     String selectcountBYtable();//总货柜数
+
+    List selectListByYears();//每月货柜数量
 }

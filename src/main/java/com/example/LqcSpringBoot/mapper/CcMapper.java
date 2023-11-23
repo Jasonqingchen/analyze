@@ -22,4 +22,6 @@ public interface CcMapper extends BaseMapper<Cctable> {
     Integer deleteKuserById(String id);
 
     String selectcountBYtable();//出库总数
+
+    List selectListByyears();//每月出库数
 }

@@ -45,6 +45,9 @@ new Vue({
             if(key=="3") {
                 this.urlss="/setting/setting";
             }
+            if(key=="4") {
+                this.urlss="https://chat.openai.com/";
+            }
             console.log(key, keyPath);
         },
 
