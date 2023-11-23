@@ -3,9 +3,12 @@
 /Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/mapper/KucunuserMapper.java
 /Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/controller/JxctablebfController.java
 /Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/model/Cctable.java
+/Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/controller/MenuController.java
+/Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/controller/EcController.java
 /Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/controller/UrlController.java
 /Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/mapper/JxctablebfMapper.java
 /Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/controller/ExcelController.java
+/Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/controller/SettingController.java
 /Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/ut/VerifyCode.java
 /Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/controller/JxcController.java
 /Library/gitwork/analyze/src/main/java/com/example/LqcSpringBoot/controller/ContainerController.java

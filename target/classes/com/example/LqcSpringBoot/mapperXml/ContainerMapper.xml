@@ -122,6 +122,24 @@
 
   <!--总货柜数-->
   <select id="selectcountBYtable" resultType="java.lang.String">
-    select count(DISTINCT gnumber) AS hgzs FROM container;
+    select sum(count) as hgzs FROM container;
+  </select>
+  <!--查询数据货柜数量-->
+  <select id="selectListByYears" resultType="java.lang.Integer">
+    select IFNULL(b.sum, 0) ordercount,a.date
+    from  (
+            select DATE_FORMAT(adddate(DATE_SUB(CURDATE(), INTERVAL dayofyear(now()) - 1 DAY),
+                                       INTERVAL numlist.id - 1 month), '%Y-%m') as date
+            from (SELECT @xi := @xi + 1 as id
+              from (SELECT 1 UNION SELECT 2 UNION SELECT 3) xc1,
+              (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4) xc2,
+              (SELECT @xi := 0) xc0) as numlist
+          ) a
+            left join
+          (
+            SELECT count(*) sum, DATE_FORMAT(cgdate, '%Y-%m') as date
+            FROM container WHERE YEAR(cgdate) = YEAR(NOW()) GROUP BY date ORDER BY date
+          ) b
+          on a.date = b.date order by date
   </select>
 </mapper>
